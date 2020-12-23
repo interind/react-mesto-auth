@@ -1,12 +1,13 @@
 import React from 'react';
-import { withRouter } from 'react-router-dom';
+import { withRouter, useHistory } from 'react-router-dom';
 import Header from './Header';
 import * as auth from '../utils/auth.js';
 import PopupWithForm from './PopupWithForm';
 import { InfoTooltip } from './InfoTooltip';
 import { MarkupForPopups } from './MarkupForPopups';
 
-function Login({ isLoadingButton, isOpen, handleLogin, history, }) {
+function Login({ isLoadingButton, isOpen, handleLogin }) {
+  const history = useHistory();
   const textButton = isLoadingButton ? 'Сохранение...' : 'Войти';
   const checkPopup = {
     id: 5,

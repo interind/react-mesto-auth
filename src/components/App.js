@@ -4,6 +4,7 @@ import {
   Switch,
   Redirect,
   withRouter,
+  useHistory,
 } from 'react-router-dom';
 import * as auth from '../utils/auth.js';
 import api from '../utils/api.js';
@@ -22,7 +23,8 @@ import EditProfilePopup from './EditProfilePopup.js';
 import { ErrorPage } from './Error/ErrorPage';
 import { CurrentUserContext } from '../context/CurrentUserContext.js';
 
-function App({ history }) {
+function App() {
+  const history = useHistory();
   const [isCard, setIsCard] = React.useState({});
   const [isAddPlacePopupOpen, setAddPlacePopup] = React.useState(false);
   const [isEditAvatarPopupOpen, setEditAvatarPopup] = React.useState(false);
@@ -56,8 +58,7 @@ function App({ history }) {
       const token = localStorage.getItem('token');
       if (token) {
         // проверим токен
-        auth.getContent(token)
-        .then((res) => {
+        auth.getContent(token).then((res) => {
           try {
             if (res) {
               setUserAuth({
@@ -68,13 +69,13 @@ function App({ history }) {
               setLoggedIn(true);
               history.push('/');
             }
-          } catch(e) {
-              return new Error(e);
-            }
+          } catch (e) {
+            return new Error(e);
+          }
         });
       }
     }
-  }, [history]);
+  }, [history, loggedIn]);
 
 
 
