@@ -1,11 +1,12 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom';
 import Header from './Header';
-import PopupWithForm from './PopupWithForm';
-import { MarkupForPopups } from './MarkupForPopups';
 import * as auth from '../utils/auth.js';
+import PopupWithForm from './PopupWithForm';
+import { InfoTooltip } from './InfoTooltip';
+import { MarkupForPopups } from './MarkupForPopups';
 
-function Login({ isLoadingButton, isOpen, handleLogin, history }) {
+function Login({ isLoadingButton, isOpen, handleLogin, history, }) {
   const textButton = isLoadingButton ? 'Сохранение...' : 'Войти';
   const checkPopup = {
     id: 5,
@@ -17,7 +18,10 @@ function Login({ isLoadingButton, isOpen, handleLogin, history }) {
 
   const [emailAndPassword, setEmailAndPassword] = React.useState({ email: '', password: '' });
   let [activeButton, setActiveButton] = React.useState(true);
-
+  const [message, setMessage] = React.useState({
+    isOpenMessage: false,
+    status: false,
+  });
   const [validCheck, setValidCheck] = React.useState({
     password: '',
     email: '',
@@ -37,10 +41,16 @@ function Login({ isLoadingButton, isOpen, handleLogin, history }) {
     setEmailAndPassword({...emailAndPassword, password: evt.target.value});
     setActiveButton(!evt.target.value);
   }
+
   function setEmailUser(evt) {
     setEmailAndPassword({ ...emailAndPassword, email: evt.target.value });
     setActiveButton(!evt.target.value);
   }
+
+  function onClose() {
+    setMessage({ ...message, isOpenMessage: false });
+  }
+
   function handleSubmit(evt) {
     evt.preventDefault();
     if (!emailAndPassword.password || !emailAndPassword.email) {
@@ -57,11 +67,18 @@ function Login({ isLoadingButton, isOpen, handleLogin, history }) {
           handleLogin(evt); // обновляем стейт внутри App.js
           history.push('/'); // и переадресуем пользователя!
         }
+        else if(!data.token) {
+          setMessage({
+            ...message,
+            isOpenMessage: true,
+          });
+        }
       })
       .catch((err) => console.log(err)); // запускается, если пользователь не найден
   }
   return (
     <React.Fragment>
+      <InfoTooltip isOpen={message} onClose={onClose} />
       <Header linkInfo={checkPopup.linkInfo} />
       <div className='page__elements'>
         <PopupWithForm

@@ -56,16 +56,21 @@ function App({ history }) {
       const token = localStorage.getItem('token');
       if (token) {
         // проверим токен
-        auth.getContent(token).then((res) => {
-          if (res) {
-            setUserAuth({
-              link: '/sign-in',
-              title: 'Выйти',
-              info: res.data.email,
-            });
-            setLoggedIn(true);
-            history.push('/');
-          }
+        auth.getContent(token)
+        .then((res) => {
+          try {
+            if (res) {
+              setUserAuth({
+                link: '/sign-in',
+                title: 'Выйти',
+                info: res.data.email,
+              });
+              setLoggedIn(true);
+              history.push('/');
+            }
+          } catch(e) {
+              return new Error(e);
+            }
         });
       }
     }
@@ -246,6 +251,7 @@ function App({ history }) {
                   isOpen={isOpenCheck}
                   isLoadingButton={buttonLoading}
                   handleLogin={handleLogin}
+                  onClose={closeAllPopups}
                 />
               </Route>
               <Route path='/sign-up' exact>
@@ -256,10 +262,10 @@ function App({ history }) {
                 />
               </Route>
               <ProtectedRoute exact path='/' loggedIn={loggedIn}>
-                <Header linkInfo={userAuth} handleLogOut ={handleLogOut}/>
                 {loading && <Loader />}
                 {statusOk & !loading && (
                   <React.Fragment>
+                    <Header linkInfo={userAuth} handleLogOut={handleLogOut} />
                     <Main
                       cards={cards}
                       isOpenCard={isOpenCard}
@@ -302,6 +308,7 @@ function App({ history }) {
                 )}
                 {!statusOk & !loading && (
                   <React.Fragment>
+                    <Header linkInfo={userAuth} handleLogOut={handleLogOut} />
                     <ErrorPage error={statusError} />
                     <Footer />
                   </React.Fragment>

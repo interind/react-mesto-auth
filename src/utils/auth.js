@@ -1,6 +1,6 @@
 export const BASE_URL = 'https://auth.nomoreparties.co/';
 
-export const register = (password, email) => { // регистрация пройдена
+export const register = (password, email) => { // регистрация
   return fetch(`${BASE_URL}signup`, {
     method: 'POST',
     headers: {
@@ -34,12 +34,14 @@ export const authorizationPost = ({ password, email }) => { // получени�
         if (response.status === 200) {
           return response.json();
         }
+        else if (response.status === 401) {
+          return response.json();
+        }
       } catch (e) {
           return e;
         }
     })
     .then((data) => {
-      // сохраняем токен
       return data;
     })
     .catch((err) => console.log(err));
