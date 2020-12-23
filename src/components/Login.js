@@ -52,7 +52,7 @@ function Login({ isLoadingButton, isOpen, handleLogin }) {
     setMessage({ ...message, isOpenMessage: false });
   }
 
-  function handleSubmit(evt) {
+  function onLogin(evt) {
     evt.preventDefault();
     if (!emailAndPassword.password || !emailAndPassword.email) {
       return;
@@ -67,8 +67,7 @@ function Login({ isLoadingButton, isOpen, handleLogin }) {
           setEmailAndPassword({ email: '', password: '' });
           handleLogin(evt); // обновляем стейт внутри App.js
           history.push('/'); // и переадресуем пользователя!
-        }
-        else if(!data.token) {
+        } else if (!data.token) {
           setMessage({
             ...message,
             isOpenMessage: true,
@@ -89,7 +88,7 @@ function Login({ isLoadingButton, isOpen, handleLogin }) {
           buttonTitle={checkPopup.buttonTitle}
           isOpen={isOpen}
           active={activeButton}
-          onSubmit={handleSubmit}>
+          onSubmit={onLogin}>
           <MarkupForPopups.Check
             email={emailAndPassword.email}
             password={emailAndPassword.password}

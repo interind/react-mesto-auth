@@ -53,24 +53,20 @@ function Register({ isLoadingButton, isOpen }) {
     setEmail(evt.target.value);
     setActiveButton(!evt.target.value);
   }
-  function handleSubmit(evt) {
+  function onRegister(evt) {
     evt.preventDefault();
     setPassword('');
     setEmail('');
     auth
-      .register(
-        password,
-        email,
-      )
-      .then((res) => { // что за сообщение и пропс истории ???
+      .register(password, email)
+      .then((res) => {
+        // что за сообщение и пропс истории ???
         if (res) {
-          setMessage(
-            {
-              ...message,
-              isOpenMessage: true,
-              status: true,
-            },
-          );
+          setMessage({
+            ...message,
+            isOpenMessage: true,
+            status: true,
+          });
           history.push('/login');
         } else {
           setMessage({
@@ -95,7 +91,7 @@ function Register({ isLoadingButton, isOpen }) {
           title={checkPopup.title}
           buttonTitle={checkPopup.buttonTitle}
           linkInfo={checkPopup.linkInfo}
-          onSubmit={handleSubmit}>
+          onSubmit={onRegister}>
           <MarkupForPopups.Check
             email={email}
             password={password}

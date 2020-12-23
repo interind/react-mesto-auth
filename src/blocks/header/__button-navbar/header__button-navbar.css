@@ -1,0 +1,44 @@
+.header__button-navbar[type='checkbox'] {
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none;
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+}
+
+
+
+@media screen and (max-width: 350px) {
+  .header__button-navbar {
+    opacity: 1;
+  }
+
+  .header__button-navbar:hover {
+    opacity: .3;
+  }
+
+  .header__button-navbar[id='span'] {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    overflow: visible;
+    width: 30px;
+    height: 30px;
+    right: 30px;
+    top: 20px;
+    opacity: 1;
+    background-image: url('../../../images/navbar/iconMenu.svg');
+    background-color: initial;
+    background-repeat: no-repeat;
+    background-position: center;
+  }
+
+  .header__button-navbar[type='checkbox']:checked + .header__button-navbar[id='span'] {
+    position: absolute;
+    background-image: url('../../../images/Close-Icon.svg');
+  }
+
+}

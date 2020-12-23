@@ -50,7 +50,7 @@ function App() {
   const [userAuth, setUserAuth] = React.useState({
     link: '',
     title: '',
-    info: '',
+    email: '',
   }); // данные в шапке при регистрации
 
   React.useEffect(() => {
@@ -64,7 +64,7 @@ function App() {
               setUserAuth({
                 link: '/sign-in',
                 title: 'Выйти',
-                info: res.data.email,
+                email: res.data.email,
               });
               setLoggedIn(true);
               history.push('/');
