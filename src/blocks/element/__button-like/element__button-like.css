@@ -1,0 +1,22 @@
+.element__button-like {
+  display: flex;
+  align-items: center;
+  width: 21px;
+  height: 19px;
+  outline-style: none;
+  background-repeat: no-repeat;
+  border: 0;
+  padding: 0;
+  background-color: transparent;
+  background-image: url(../../../images/elements/GroupWhite.svg);
+}
+
+.element__button-like:hover {
+  opacity: .6;
+  cursor: pointer;
+}
+
+.element__button-like:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px lightskyblue;
+}

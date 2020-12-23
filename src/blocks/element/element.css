@@ -1,0 +1,14 @@
+.element {
+  position: relative;
+  box-sizing: border-box;
+  margin: 0;
+  max-width: 282px;
+  width: 100%;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.element:hover {
+  transform: translateY(-2px) scale(1.005) translateZ(0);
+  box-shadow: 0 24px 36px rgba(0, 0, 0, 0.11), 0 24px 46px;
+}

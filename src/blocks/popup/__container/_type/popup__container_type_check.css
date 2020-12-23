@@ -1,0 +1,7 @@
+.popup__container_type_check {
+  padding: 20px 40px;
+  align-self: stretch;
+  max-height: 100%;
+  width: 100%;
+  background-color: #000;
+}

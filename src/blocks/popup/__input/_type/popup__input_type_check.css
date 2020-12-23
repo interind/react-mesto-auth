@@ -1,0 +1,14 @@
+.popup__input_type_check {
+  margin: 30px 0 0;
+  background-color: #000;
+  color: #808080;
+  border-bottom: 2px solid #808080;
+}
+
+.popup__input_type_check:first-of-type {
+  margin-top: 0;
+}
+
+.popup__input:focus {
+  outline: 1px groove rgba(230, 230, 230, 0.657);
+}

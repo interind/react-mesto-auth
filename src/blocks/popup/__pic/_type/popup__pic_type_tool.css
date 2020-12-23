@@ -1,0 +1,12 @@
+.popup__pic_type_tool {
+  max-width: 120px;
+  max-height: 120px;
+  object-fit: cover;
+  margin-bottom: 34px;
+}
+
+@media screen and (max-width: 320px) {
+  .popup__pic_type_tool {
+    margin-bottom: 40px;
+  }
+}

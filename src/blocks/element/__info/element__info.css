@@ -1,0 +1,18 @@
+.element__info {
+  box-sizing: border-box;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #fff;
+  max-width: 282px;
+  width: 100%;
+  margin: 0;
+  padding-left: 21px;
+  padding-right: 7px;
+}
+
+@media screen and (max-width: 320px) {
+  .element__info {
+    padding-right: 15px;
+  }
+}

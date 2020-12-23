@@ -1,0 +1,15 @@
+.element__pic {
+  display: block;
+  width: 282px;
+  height: 282px;
+  object-fit: cover;
+  object-position: center;
+  background-image: url('../../../images/errorPic.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+}
+
+.element__pic:hover {
+  cursor: zoom-in;
+}

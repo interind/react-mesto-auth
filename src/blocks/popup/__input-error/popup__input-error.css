@@ -1,0 +1,10 @@
+.popup__input-error {
+  visibility: hidden;
+  font-size: 12px;
+  line-height: 1.25;
+  font-weight: normal;
+  font-style: normal;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  color: #f00;
+  align-self: flex-start;
+}

@@ -1,0 +1,18 @@
+.element__title {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  max-width: 220px;
+  width: 100%;
+  margin: 26px 0;
+  font-family: 'Inter', Arial, sans-serif;
+  font-style: normal;
+  font-weight: 900;
+  font-size: 24px;
+  line-height: 1.2;
+  color: #000;
+}
+
+.element__title:hover {
+  cursor: default;
+}

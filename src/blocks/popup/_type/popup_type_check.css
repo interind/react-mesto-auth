@@ -1,0 +1,7 @@
+.popup_type_check {
+  position: static;
+  margin: 0 auto;
+  max-width: 430px;
+  height: 100%;
+  min-height: 484px;
+}

@@ -1,0 +1,28 @@
+.profile {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  font-family: 'Inter', Arial, sans-serif;
+  max-width: 882px;
+  width: 100%;
+  min-width: 282px;
+}
+
+@media screen and (max-width: 898px) {
+  .profile {
+    width: 90%;
+  }
+}
+
+@media screen and (max-width: 750px) {
+  .profile {
+    flex-direction: column;
+    align-items: center;
+  }
+}
+
+@media screen and (max-width: 320px) {
+  .profile {
+    width: 88.12%;
+  }
+}

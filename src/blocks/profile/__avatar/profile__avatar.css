@@ -1,0 +1,20 @@
+.profile__avatar {
+  overflow: hidden;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #000;
+}
+
+.profile__avatar:hover {
+  opacity: .2;
+  cursor: pointer;
+  cursor: url(../../../images/profile/cursor.png) 2 2, pointer;
+}
+
+@media screen and (max-width: 320px) {
+  .profile__avatar {
+    margin-bottom: 14px;
+  }
+}
