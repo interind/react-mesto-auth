@@ -1,8 +1,10 @@
 .navbar {
+  transition: visibility .2s linear, opacity .3s ease;
+  visibility: hidden;
   display: flex;
   justify-content: flex-end;
   align-items: flex-end;
-  height: 33px;
   max-width: 882px;
   min-width: 320px;
+  opacity: 0;
 }

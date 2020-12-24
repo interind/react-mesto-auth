@@ -4,7 +4,6 @@ import {
   Switch,
   Redirect,
   withRouter,
-  useHistory,
 } from 'react-router-dom';
 import * as auth from '../utils/auth.js';
 import api from '../utils/api.js';
@@ -24,8 +23,8 @@ import { ErrorPage } from './Error/ErrorPage';
 import { CurrentUserContext } from '../context/CurrentUserContext.js';
 import Navbar from './Navbar.js';
 
-function App() {
-  const history = useHistory();
+function App({history}) {
+  // const history = useHistory();
   const [isCard, setIsCard] = React.useState({});
   const [isAddPlacePopupOpen, setAddPlacePopup] = React.useState(false);
   const [isEditAvatarPopupOpen, setEditAvatarPopup] = React.useState(false);
@@ -262,6 +261,8 @@ function App() {
                   isLoadingButton={buttonLoading}
                   handleLogin={handleLogin}
                   onClose={closeAllPopups}
+                  onNavbar={visibleNavbar}
+                  offNavbar={hiddenNavbar}
                 />
               </Route>
               <Route path='/sign-up' exact>
@@ -269,14 +270,23 @@ function App() {
                   isOpen={isOpenCheck}
                   isLoadingButton={buttonLoading}
                   onClose={closeAllPopups}
+                  onNavbar={visibleNavbar}
+                  offNavbar={hiddenNavbar}
                 />
               </Route>
               <ProtectedRoute exact path='/' loggedIn={loggedIn}>
                 {loading && <Loader />}
                 {statusOk & !loading && (
                   <React.Fragment>
-                    { isNavbarOpen && <Navbar selectorPlace={'page'} linkInfo={userAuth}/>}
-                    <Header linkInfo={userAuth} handleLogOut={handleLogOut} onNavbar={visibleNavbar} offNavbar={hiddenNavbar}/>
+                    {isNavbarOpen && (
+                      <Navbar selectorPlace={'page'} linkInfo={userAuth} />
+                    )}
+                    <Header
+                      linkInfo={userAuth}
+                      handleLogOut={handleLogOut}
+                      onNavbar={visibleNavbar}
+                      offNavbar={hiddenNavbar}
+                    />
                     <Main
                       cards={cards}
                       isOpenCard={isOpenCard}
@@ -319,7 +329,12 @@ function App() {
                 )}
                 {!statusOk & !loading && (
                   <React.Fragment>
-                    <Header linkInfo={userAuth} handleLogOut={handleLogOut} />
+                    <Header
+                      linkInfo={userAuth}
+                      handleLogOut={handleLogOut}
+                      onNavbar={visibleNavbar}
+                      offNavbar={hiddenNavbar}
+                    />
                     <ErrorPage error={statusError} />
                     <Footer />
                   </React.Fragment>

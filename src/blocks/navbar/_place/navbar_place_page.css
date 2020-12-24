@@ -4,4 +4,7 @@
   align-items: center;
   min-height: 100px;
   border-bottom: 1px solid rgba(84, 84, 84, .7);
+  visibility: visible;
+  opacity: 1;
+  transition: visibility .2s linear, opacity .3s ease;
 }

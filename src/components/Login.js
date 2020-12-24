@@ -1,13 +1,13 @@
 import React from 'react';
-import { withRouter, useHistory } from 'react-router-dom';
+import { withRouter} from 'react-router-dom';
 import Header from './Header';
 import * as auth from '../utils/auth.js';
 import PopupWithForm from './PopupWithForm';
-import { InfoTooltip } from './InfoTooltip';
+import InfoTooltip from './InfoTooltip';
 import { MarkupForPopups } from './MarkupForPopups';
 
-function Login({ isLoadingButton, isOpen, handleLogin }) {
-  const history = useHistory();
+function Login({ isLoadingButton, isOpen, handleLogin, onNavbar, offNavbar, history }) {
+
   const textButton = isLoadingButton ? 'Сохранение...' : 'Войти';
   const checkPopup = {
     id: 5,
@@ -22,9 +22,10 @@ function Login({ isLoadingButton, isOpen, handleLogin }) {
     password: '',
   });
   let [activeButton, setActiveButton] = React.useState(true);
-  const [message, setMessage] = React.useState({
+  const [messageStatus, setMessageStatus] = React.useState({
     isOpenMessage: false,
     status: false,
+    message: '',
   });
   const [validCheck, setValidCheck] = React.useState({
     password: '',
@@ -42,7 +43,7 @@ function Login({ isLoadingButton, isOpen, handleLogin }) {
   }
 
   function setPasswordUser(evt) {
-    setEmailAndPassword({...emailAndPassword, password: evt.target.value});
+    setEmailAndPassword({ ...emailAndPassword, password: evt.target.value });
     setActiveButton(!evt.target.value);
   }
 
@@ -52,7 +53,11 @@ function Login({ isLoadingButton, isOpen, handleLogin }) {
   }
 
   function onClose() {
-    setMessage({ ...message, isOpenMessage: false });
+    setMessageStatus({
+      ...messageStatus,
+      isOpenMessage: false,
+      status: false,
+    });
   }
 
   function onLogin(evt) {
@@ -72,10 +77,12 @@ function Login({ isLoadingButton, isOpen, handleLogin }) {
           setEmailAndPassword({ email: '', password: '' });
           handleLogin(evt); // обновляем стейт внутри App.js
           history.push('/'); // и переадресуем пользователя!
-        } else if (!data.token) {
-          setMessage({
-            ...message,
+        } else if (!data.token && data.message) {
+          setMessageStatus({
+            ...messageStatus,
             isOpenMessage: true,
+            status: false,
+            message: data.message,
           });
         }
       })
@@ -83,8 +90,12 @@ function Login({ isLoadingButton, isOpen, handleLogin }) {
   }
   return (
     <React.Fragment>
-      <InfoTooltip isOpen={message} onClose={onClose} />
-      <Header linkInfo={checkPopup.linkInfo} />
+      <InfoTooltip isOpen={messageStatus} onClose={onClose} />
+      <Header
+        linkInfo={checkPopup.linkInfo}
+        onNavbar={onNavbar}
+        offNavbar={offNavbar}
+      />
       <div className='page__elements'>
         <PopupWithForm
           key={checkPopup.id}

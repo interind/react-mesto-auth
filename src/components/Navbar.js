@@ -1,15 +1,15 @@
 import React from 'react';
-import { Link, useHistory } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import classes from 'classnames';
 
-function Navbar({ linkInfo, handleLogOut, selectorPlace }) {
+function Navbar({ linkInfo, handleLogOut, selectorPlace, history }) {
   const { link, email, info, title } = linkInfo;
   const selector = classes('navbar', {
     'navbar_place_header': selectorPlace === 'header',
     'navbar_place_form': selectorPlace === 'form',
     'navbar_place_page': selectorPlace === 'page',
   });
-  const history = useHistory();
+  // const history = useHistory();
   function signOut(evt) {
     if (title === 'Выйти') {
       localStorage.removeItem('token');
@@ -18,6 +18,7 @@ function Navbar({ linkInfo, handleLogOut, selectorPlace }) {
       history.push('/sign-in');
     }
   }
+
   return (
     <nav className={selector}>
       {(email || info) && <p className='navbar__info'>{(email || info)}</p>}
@@ -28,4 +29,4 @@ function Navbar({ linkInfo, handleLogOut, selectorPlace }) {
   );
 }
 
-export default Navbar;
+export default withRouter(Navbar);

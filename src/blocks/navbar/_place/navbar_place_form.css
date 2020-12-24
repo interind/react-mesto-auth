@@ -1,3 +1,6 @@
 .navbar_place_form {
   justify-content: center;
+  opacity: 1;
+  visibility: visible;
+  height: 33px;
 }

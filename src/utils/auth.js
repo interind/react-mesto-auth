@@ -1,7 +1,7 @@
 export const BASE_URL = 'https://auth.nomoreparties.co/';
 
 function getResponse(res) {
-  return res.ok
+  return res.status === '200' || '400' || '401'
     ? res.json()
     : Promise.reject(new Error(`Ошибка api: ${res.status}`));
 }
@@ -40,12 +40,12 @@ export const getContent = (token) => {
   }).then(getResponse)
 };
 
-export const deleteUser = (id, token) => {
-    return fetch(`${this._url}${id}`, {
-      method: 'DELETE',
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-type': 'application/json; charset=UTF-8',
-      },
-    }).then(getResponse);
-  };
+// export const deleteUser = (id, token) => {
+//     return fetch(`${this._url}${id}`, {
+//       method: 'DELETE',
+//       headers: {
+//         'Authorization': `Bearer ${token}`,
+//         'Content-type': 'application/json; charset=UTF-8',
+//       },
+//     }).then(getResponse);
+//   };

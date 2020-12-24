@@ -1,8 +1,11 @@
 .navbar_place_header {
   min-width: 100px;
+  height: 33px;
+  opacity: 1;
+  visibility: visible;
 }
 
-@media screen and (max-width: 350px) {
+@media screen and (max-width: 450px) {
   .navbar_place_header {
     opacity: 0;
     display: none;

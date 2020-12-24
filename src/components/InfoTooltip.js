@@ -1,18 +1,20 @@
 
 import React from 'react';
+import { withRouter } from 'react-router-dom';
 import classes from 'classnames';
 import enable from '../images/check/iconOk.svg';
 import disable from '../images/check/iconUnion.svg';
 import { MarkupForPopups } from './MarkupForPopups';
 
 
-export function InfoTooltip({ isOpen, onClose}) { // подумать как провести регистрацию onOff
-  const { isOpenMessage, status } = isOpen;
+function InfoTooltip({ isOpen, onClose}) { // подумать как провести регистрацию onOff
+  const { isOpenMessage, status, message } = isOpen;
+  const defaultTitle = status ? 'Вы успешно зарегистрировались.'
+     : 'Что-то пошло не так! Попробуйте ещё раз.';
+  console.log(message);
   const tool = {
     id: 7,
-    title: status
-      ? 'Вы успешно зарегистрировались.'
-      : 'Что-то пошло не так! Попробуйте ещё раз.',
+    title: message !== '' ? message : defaultTitle,
     alt: status ? 'Регистрация пройдена' : 'Регистрация не пройдена',
     icon: status ? enable : disable,
     classTool: classes('popup', {
@@ -31,3 +33,5 @@ export function InfoTooltip({ isOpen, onClose}) { // подумать как п�
     />
   );
 }
+
+export default withRouter(InfoTooltip);

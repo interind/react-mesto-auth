@@ -1,20 +1,24 @@
 import React from 'react';
-import { withRouter, useHistory } from 'react-router-dom';
+import { withRouter} from 'react-router-dom';
 import Header from './Header';
 import PopupWithForm from './PopupWithForm';
 import { MarkupForPopups } from './MarkupForPopups';
 import * as auth from '../utils/auth.js';
-import { InfoTooltip } from './InfoTooltip';
+import InfoTooltip from './InfoTooltip';
 
-function Register({ isLoadingButton, isOpen }) {
-  const history = useHistory();
+function Register({ isLoadingButton, isOpen, onNavbar, offNavbar, history }) {
+
   const textButton = isLoadingButton ? 'Сохранение...' : 'Регистрация';
   const checkPopup = {
     id: 6,
     name: 'check',
     title: 'Регистрация',
     buttonTitle: `${textButton}`,
-    linkInfo: { link: '/sign-in', title: 'Вход', info: 'Вы уже зарегистрировались?' },
+    linkInfo: {
+      link: '/sign-in',
+      title: 'Вход',
+      info: 'Вы уже зарегистрировались?',
+    },
   };
   const regNavbar = {
     link: checkPopup.linkInfo.link,
@@ -23,7 +27,11 @@ function Register({ isLoadingButton, isOpen }) {
 
   const [password, setPassword] = React.useState('');
   const [email, setEmail] = React.useState('');
-  const [message, setMessage] = React.useState({isOpenMessage: false, status: false});
+  const [messageStatus, setMessageStatus] = React.useState({
+    isOpenMessage: false,
+    status: false,
+    message: '',
+  });
   let [activeButton, setActiveButton] = React.useState(true);
 
   const [validCheck, setValidCheck] = React.useState({
@@ -42,7 +50,11 @@ function Register({ isLoadingButton, isOpen }) {
   }
 
   function onClose() {
-    setMessage({ ...message, isOpenMessage: false});
+    setMessageStatus({
+      ...messageStatus,
+      isOpenMessage: false,
+      status: false,
+    });
   }
 
   function setPasswordUser(evt) {
@@ -63,33 +75,49 @@ function Register({ isLoadingButton, isOpen }) {
         console.log('reg', res);
         if (res.data) {
           localStorage.setItem('email', res.data.email);
-          setMessage({
-            ...message,
+          setMessageStatus({
+            ...messageStatus,
             isOpenMessage: true,
             status: true,
+            message: res.data,
           });
           history.push('/sign-in');
-        } else {
-          setMessage({
-            ...message,
+        } else if (res.error) {
+          setMessageStatus({
+            ...messageStatus,
             isOpenMessage: true,
             status: false,
+            message: res.error,
+          });
+        } else if (res.message) {
+          setMessageStatus({
+            ...messageStatus,
+            isOpenMessage: true,
+            status: false,
+            message: res.message,
           });
         }
       })
       .catch((err) => {
-        setMessage({
-          ...message,
+        setMessageStatus({
+          ...messageStatus,
           isOpenMessage: true,
           status: false,
         });
-        console.log(err.message)
+        console.log(err);
       });
   }
   return (
     <React.Fragment>
-      <InfoTooltip isOpen={message} onClose={onClose} />
-      <Header linkInfo={regNavbar} />
+      <InfoTooltip
+        isOpen={messageStatus}
+        onClose={onClose}
+      />
+      <Header
+        linkInfo={regNavbar}
+        onNavbar={onNavbar}
+        offNavbar={offNavbar}
+      />
       <div className='page__elements'>
         <PopupWithForm
           isOpen={isOpen}
