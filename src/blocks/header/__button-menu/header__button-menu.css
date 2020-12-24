@@ -1,4 +1,4 @@
-.header__button-navbar[type='checkbox'] {
+.header__button-menu[type='checkbox'] {
   -webkit-appearance: none;
      -moz-appearance: none;
           appearance: none;
@@ -12,23 +12,21 @@
 
 
 @media screen and (max-width: 350px) {
-  .header__button-navbar {
+  .header__button-menu {
     opacity: 1;
   }
 
-  .header__button-navbar:hover {
+  .header__button-menu:hover {
     opacity: .3;
   }
 
-  .header__button-navbar[id='span'] {
+  .header__button-menu[id='span'] {
     position: absolute;
-    width: 20px;
-    height: 20px;
     overflow: visible;
     width: 30px;
     height: 30px;
-    right: 30px;
-    top: 20px;
+    right: 20px;
+    top: 0;
     opacity: 1;
     background-image: url('../../../images/navbar/iconMenu.svg');
     background-color: initial;
@@ -36,8 +34,7 @@
     background-position: center;
   }
 
-  .header__button-navbar[type='checkbox']:checked + .header__button-navbar[id='span'] {
-    position: absolute;
+  .header__button-menu[type='checkbox']:checked + .header__button-menu[id='span'] {
     background-image: url('../../../images/Close-Icon.svg');
   }
 

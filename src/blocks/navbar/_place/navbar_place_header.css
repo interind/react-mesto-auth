@@ -1,0 +1,10 @@
+.navbar_place_header {
+  min-width: 100px;
+}
+
+@media screen and (max-width: 350px) {
+  .navbar_place_header {
+    opacity: 0;
+    display: none;
+  }
+}

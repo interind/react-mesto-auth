@@ -1,0 +1,10 @@
+.navbar__info {
+  color: #fff;
+  margin: 0 15px 0 0;
+}
+
+@media screen and (max-width: 350px) {
+  .navbar__info {
+    margin: 0;
+  }
+}

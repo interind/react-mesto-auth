@@ -1,0 +1,8 @@
+.navbar {
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+  height: 33px;
+  max-width: 882px;
+  min-width: 320px;
+}

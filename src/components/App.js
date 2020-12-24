@@ -22,6 +22,7 @@ import DeleteCardPopup from './DeleteCardPopup.js';
 import EditProfilePopup from './EditProfilePopup.js';
 import { ErrorPage } from './Error/ErrorPage';
 import { CurrentUserContext } from '../context/CurrentUserContext.js';
+import Navbar from './Navbar.js';
 
 function App() {
   const history = useHistory();
@@ -30,6 +31,7 @@ function App() {
   const [isEditAvatarPopupOpen, setEditAvatarPopup] = React.useState(false);
   const [isEditProfilePopupOpen, setEditProfilePopup] = React.useState(false);
   const [isConfirmTrashPopupOpen, setConfirmTrashPopup] = React.useState(false);
+  const [isNavbarOpen, setNavbarOpen] = React.useState(false);
   const [currentUser, setCurrentUser] = React.useState({
     name: '',
     about: '',
@@ -77,7 +79,13 @@ function App() {
     }
   }, [history, loggedIn]);
 
+  function visibleNavbar() {
+    setNavbarOpen(true);
+  }
 
+  function hiddenNavbar() {
+    setNavbarOpen(false);
+  }
 
   function handleLogin(event){
     event.preventDefault();
@@ -266,7 +274,8 @@ function App() {
                 {loading && <Loader />}
                 {statusOk & !loading && (
                   <React.Fragment>
-                    <Header linkInfo={userAuth} handleLogOut={handleLogOut} />
+                    { isNavbarOpen && <Navbar selectorPlace={'page'} linkInfo={userAuth}/>}
+                    <Header linkInfo={userAuth} handleLogOut={handleLogOut} onNavbar={visibleNavbar} offNavbar={hiddenNavbar}/>
                     <Main
                       cards={cards}
                       isOpenCard={isOpenCard}
