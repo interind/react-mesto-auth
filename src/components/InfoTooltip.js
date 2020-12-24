@@ -7,7 +7,7 @@ import disable from '../images/check/iconUnion.svg';
 import { MarkupForPopups } from './MarkupForPopups';
 
 
-function InfoTooltip({ isOpen, onClose}) { // подумать как провести регистрацию onOff
+function InfoTooltip({ isOpen, onClose, }) { // подумать как провести регистрацию onOff
   const { isOpenMessage, status, message } = isOpen;
   const defaultTitle = status ? 'Вы успешно зарегистрировались.'
      : 'Что-то пошло не так! Попробуйте ещё раз.';

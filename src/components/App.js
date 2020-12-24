@@ -13,6 +13,7 @@ import Header from './Header.js';
 import Footer from './Footer.js';
 import Loader from './Loader/Loader.js';
 import Register from './Register';
+import InfoTooltip from './InfoTooltip.js';
 import AddPlacePopup from './AddPlacePopup.js';
 import ErrorBoundary from './Error/ErrorBoundary.js';
 import ProtectedRoute from './ProtectedRoute';
@@ -44,7 +45,7 @@ function App({history}) {
   const [statusError, setError] = React.useState({}); // флаг для ошибки сервера
   const [isOpenCard, setOpenCard] = React.useState(false); // тут булевое значение для попапа с картинкой
   const [isOpenCheck, setOpenCheck] = React.useState(true); // окно информации регистрации
-  const [isOpenTooltip, setOpenTooltip] = React.useState({});
+  const [isTooltip, setTooltip] = React.useState({ isOpenMessage: false, status: false, message: '' });
   const [selectedCard, setSelectedCard] = React.useState({}); // объект для попапа с картинкой
   const [buttonLoading, setButtonLoading] = React.useState(false); // Лоадер для кнопки сохранить.
   // const [token, setToken] = React.useState({})
@@ -53,6 +54,11 @@ function App({history}) {
     title: '',
     email: '',
   }); // данные в шапке при регистрации
+
+  function onLogin(token) {
+    setTooltip({ ...isTooltip, isOpenMessage: true, status: true });
+    localStorage.setItem('token', token);
+  }
 
   React.useEffect(() => {
     if (localStorage.getItem('token')) {
@@ -193,7 +199,11 @@ function App({history}) {
     setOpenCard(false);
     setButtonLoading(false);
     setOpenCheck(true);
-    setOpenTooltip({ ...isOpenTooltip, open: false });
+    setTooltip({
+      ...isTooltip,
+      isOpenMessage: false,
+      message: '',
+    });
   }
 
   function handleEditAvatarClick() {
@@ -263,6 +273,7 @@ function App({history}) {
                   onClose={closeAllPopups}
                   onNavbar={visibleNavbar}
                   offNavbar={hiddenNavbar}
+                  onLogin={onLogin}
                 />
               </Route>
               <Route path='/sign-up' exact>
@@ -278,6 +289,12 @@ function App({history}) {
                 {loading && <Loader />}
                 {statusOk & !loading && (
                   <React.Fragment>
+                    {loggedIn && (
+                      <InfoTooltip
+                        isOpen={isTooltip}
+                        onClose={closeAllPopups}
+                      />
+                    )}
                     {isNavbarOpen && (
                       <Navbar selectorPlace={'page'} linkInfo={userAuth} />
                     )}

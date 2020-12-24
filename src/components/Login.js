@@ -6,7 +6,7 @@ import PopupWithForm from './PopupWithForm';
 import InfoTooltip from './InfoTooltip';
 import { MarkupForPopups } from './MarkupForPopups';
 
-function Login({ isLoadingButton, isOpen, handleLogin, onNavbar, offNavbar, history }) {
+function Login({ isLoadingButton, isOpen, handleLogin, onNavbar, offNavbar, onLogin, history }) {
 
   const textButton = isLoadingButton ? 'Сохранение...' : 'Войти';
   const checkPopup = {
@@ -60,7 +60,7 @@ function Login({ isLoadingButton, isOpen, handleLogin, onNavbar, offNavbar, hist
     });
   }
 
-  function onLogin(evt) {
+  function verifiesAuthorization(evt) {
     evt.preventDefault();
     if (!emailAndPassword.password || !emailAndPassword.email) {
       return;
@@ -72,7 +72,7 @@ function Login({ isLoadingButton, isOpen, handleLogin, onNavbar, offNavbar, hist
       .then((data) => {
         console.log('login', data);
         if (data.token) {
-          localStorage.setItem('token', data.token);
+          onLogin(data.token);
           localStorage.setItem('email', emailAndPassword.email);
           setEmailAndPassword({ email: '', password: '' });
           handleLogin(evt); // обновляем стейт внутри App.js
@@ -90,7 +90,7 @@ function Login({ isLoadingButton, isOpen, handleLogin, onNavbar, offNavbar, hist
   }
   return (
     <React.Fragment>
-      <InfoTooltip isOpen={messageStatus} onClose={onClose} />
+      {!messageStatus.status && <InfoTooltip isOpen={messageStatus} onClose={onClose} />}
       <Header
         linkInfo={checkPopup.linkInfo}
         onNavbar={onNavbar}
@@ -104,7 +104,7 @@ function Login({ isLoadingButton, isOpen, handleLogin, onNavbar, offNavbar, hist
           buttonTitle={checkPopup.buttonTitle}
           isOpen={isOpen}
           active={activeButton}
-          onSubmit={onLogin}>
+          onSubmit={verifiesAuthorization}>
           <MarkupForPopups.Check
             email={emailAndPassword.email}
             password={emailAndPassword.password}

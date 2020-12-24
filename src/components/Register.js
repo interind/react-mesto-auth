@@ -65,7 +65,7 @@ function Register({ isLoadingButton, isOpen, onNavbar, offNavbar, history }) {
     setEmail(evt.target.value);
     setActiveButton(!evt.target.value);
   }
-  function onRegister(evt) {
+  function verifiesRegistration(evt) {
     evt.preventDefault();
     setPassword('');
     setEmail('');
@@ -109,15 +109,8 @@ function Register({ isLoadingButton, isOpen, onNavbar, offNavbar, history }) {
   }
   return (
     <React.Fragment>
-      <InfoTooltip
-        isOpen={messageStatus}
-        onClose={onClose}
-      />
-      <Header
-        linkInfo={regNavbar}
-        onNavbar={onNavbar}
-        offNavbar={offNavbar}
-      />
+      <InfoTooltip isOpen={messageStatus} onClose={onClose} />
+      <Header linkInfo={regNavbar} onNavbar={onNavbar} offNavbar={offNavbar} />
       <div className='page__elements'>
         <PopupWithForm
           isOpen={isOpen}
@@ -127,7 +120,7 @@ function Register({ isLoadingButton, isOpen, onNavbar, offNavbar, history }) {
           title={checkPopup.title}
           buttonTitle={checkPopup.buttonTitle}
           linkInfo={checkPopup.linkInfo}
-          onSubmit={onRegister}>
+          onSubmit={verifiesRegistration}>
           <MarkupForPopups.Check
             email={email}
             password={password}
