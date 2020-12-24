@@ -1,13 +1,13 @@
 import React from 'react';
-import { withRouter} from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import Header from './Header';
 import * as auth from '../utils/auth.js';
 import PopupWithForm from './PopupWithForm';
 import InfoTooltip from './InfoTooltip';
 import { MarkupForPopups } from './MarkupForPopups';
 
-function Login({ isLoadingButton, isOpen, handleLogin, onNavbar, offNavbar, onLogin, history }) {
-
+function Login({ isLoadingButton, isOpen, handleLogin, onNavbar, offNavbar, onLogin }) {
+  const history = useHistory();
   const textButton = isLoadingButton ? 'Сохранение...' : 'Войти';
   const checkPopup = {
     id: 5,
@@ -23,7 +23,7 @@ function Login({ isLoadingButton, isOpen, handleLogin, onNavbar, offNavbar, onLo
   });
   let [activeButton, setActiveButton] = React.useState(true);
   const [messageStatus, setMessageStatus] = React.useState({
-    isOpenMessage: false,
+    isOpenTool: false,
     status: false,
     message: '',
   });
@@ -55,8 +55,17 @@ function Login({ isLoadingButton, isOpen, handleLogin, onNavbar, offNavbar, onLo
   function onClose() {
     setMessageStatus({
       ...messageStatus,
-      isOpenMessage: false,
+      isOpenTool: false,
       status: false,
+    });
+  }
+
+  function infoMessage(text, boole) {
+    setMessageStatus({
+      ...messageStatus,
+      isOpenTool: true,
+      status: boole,
+      message: text,
     });
   }
 
@@ -78,19 +87,14 @@ function Login({ isLoadingButton, isOpen, handleLogin, onNavbar, offNavbar, onLo
           handleLogin(evt); // обновляем стейт внутри App.js
           history.push('/'); // и переадресуем пользователя!
         } else if (!data.token && data.message) {
-          setMessageStatus({
-            ...messageStatus,
-            isOpenMessage: true,
-            status: false,
-            message: data.message,
-          });
+          infoMessage(data.message, false);
         }
       })
       .catch((err) => console.log(err)); // запускается, если пользователь не найден
   }
   return (
     <React.Fragment>
-      {!messageStatus.status && <InfoTooltip isOpen={messageStatus} onClose={onClose} />}
+      <InfoTooltip isTooltip={messageStatus} onClose={onClose} />
       <Header
         linkInfo={checkPopup.linkInfo}
         onNavbar={onNavbar}
@@ -119,4 +123,4 @@ function Login({ isLoadingButton, isOpen, handleLogin, onNavbar, offNavbar, onLo
   );
 }
 
-export default withRouter(Login);
+export default Login;

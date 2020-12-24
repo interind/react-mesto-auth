@@ -1,13 +1,13 @@
 import React from 'react';
-import { withRouter} from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import Header from './Header';
+import InfoTooltip from './InfoTooltip';
 import PopupWithForm from './PopupWithForm';
 import { MarkupForPopups } from './MarkupForPopups';
 import * as auth from '../utils/auth.js';
-import InfoTooltip from './InfoTooltip';
 
-function Register({ isLoadingButton, isOpen, onNavbar, offNavbar, history }) {
-
+function Register({ isLoadingButton, isOpen, onNavbar, offNavbar }) {
+  const history = useHistory();
   const textButton = isLoadingButton ? 'Сохранение...' : 'Регистрация';
   const checkPopup = {
     id: 6,
@@ -28,7 +28,7 @@ function Register({ isLoadingButton, isOpen, onNavbar, offNavbar, history }) {
   const [password, setPassword] = React.useState('');
   const [email, setEmail] = React.useState('');
   const [messageStatus, setMessageStatus] = React.useState({
-    isOpenMessage: false,
+    isOpenTool: false,
     status: false,
     message: '',
   });
@@ -52,8 +52,17 @@ function Register({ isLoadingButton, isOpen, onNavbar, offNavbar, history }) {
   function onClose() {
     setMessageStatus({
       ...messageStatus,
-      isOpenMessage: false,
+      isOpenTool: false,
       status: false,
+    });
+  }
+
+  function infoMessage(text, boole) {
+    setMessageStatus({
+      ...messageStatus,
+      isOpenTool: true,
+      status: boole,
+      message: text,
     });
   }
 
@@ -75,41 +84,22 @@ function Register({ isLoadingButton, isOpen, onNavbar, offNavbar, history }) {
         console.log('reg', res);
         if (res.data) {
           localStorage.setItem('email', res.data.email);
-          setMessageStatus({
-            ...messageStatus,
-            isOpenMessage: true,
-            status: true,
-            message: res.data,
-          });
+          infoMessage(res.data, true);
           history.push('/sign-in');
         } else if (res.error) {
-          setMessageStatus({
-            ...messageStatus,
-            isOpenMessage: true,
-            status: false,
-            message: res.error,
-          });
+           infoMessage(res.error, false);
         } else if (res.message) {
-          setMessageStatus({
-            ...messageStatus,
-            isOpenMessage: true,
-            status: false,
-            message: res.message,
-          });
+          infoMessage(res.message, false);
         }
       })
       .catch((err) => {
-        setMessageStatus({
-          ...messageStatus,
-          isOpenMessage: true,
-          status: false,
-        });
+        infoMessage('', false);
         console.log(err);
       });
   }
   return (
     <React.Fragment>
-      <InfoTooltip isOpen={messageStatus} onClose={onClose} />
+      <InfoTooltip isTooltip={messageStatus} onClose={onClose} />
       <Header linkInfo={regNavbar} onNavbar={onNavbar} offNavbar={offNavbar} />
       <div className='page__elements'>
         <PopupWithForm
@@ -135,4 +125,4 @@ function Register({ isLoadingButton, isOpen, onNavbar, offNavbar, history }) {
   );
 }
 
-export default withRouter(Register);
+export default Register;

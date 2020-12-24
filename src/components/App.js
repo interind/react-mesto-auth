@@ -3,7 +3,7 @@ import {
   Route,
   Switch,
   Redirect,
-  withRouter,
+  useHistory,
 } from 'react-router-dom';
 import * as auth from '../utils/auth.js';
 import api from '../utils/api.js';
@@ -24,8 +24,8 @@ import { ErrorPage } from './Error/ErrorPage';
 import { CurrentUserContext } from '../context/CurrentUserContext.js';
 import Navbar from './Navbar.js';
 
-function App({history}) {
-  // const history = useHistory();
+function App() {
+  const history = useHistory();
   const [isCard, setIsCard] = React.useState({});
   const [isAddPlacePopupOpen, setAddPlacePopup] = React.useState(false);
   const [isEditAvatarPopupOpen, setEditAvatarPopup] = React.useState(false);
@@ -45,7 +45,7 @@ function App({history}) {
   const [statusError, setError] = React.useState({}); // флаг для ошибки сервера
   const [isOpenCard, setOpenCard] = React.useState(false); // тут булевое значение для попапа с картинкой
   const [isOpenCheck, setOpenCheck] = React.useState(true); // окно информации регистрации
-  const [isTooltip, setTooltip] = React.useState({ isOpenMessage: false, status: false, message: '' });
+  const [isTooltip, setTooltip] = React.useState({ isOpenTool: false, status: false, message: '' });
   const [selectedCard, setSelectedCard] = React.useState({}); // объект для попапа с картинкой
   const [buttonLoading, setButtonLoading] = React.useState(false); // Лоадер для кнопки сохранить.
   // const [token, setToken] = React.useState({})
@@ -56,7 +56,7 @@ function App({history}) {
   }); // данные в шапке при регистрации
 
   function onLogin(token) {
-    setTooltip({ ...isTooltip, isOpenMessage: true, status: true });
+    setTooltip({ ...isTooltip, isOpenTool: true, status: true });
     localStorage.setItem('token', token);
   }
 
@@ -201,7 +201,7 @@ function App({history}) {
     setOpenCheck(true);
     setTooltip({
       ...isTooltip,
-      isOpenMessage: false,
+      isOpenTool: false,
       message: '',
     });
   }
@@ -270,7 +270,6 @@ function App({history}) {
                   isOpen={isOpenCheck}
                   isLoadingButton={buttonLoading}
                   handleLogin={handleLogin}
-                  onClose={closeAllPopups}
                   onNavbar={visibleNavbar}
                   offNavbar={hiddenNavbar}
                   onLogin={onLogin}
@@ -280,7 +279,6 @@ function App({history}) {
                 <Register
                   isOpen={isOpenCheck}
                   isLoadingButton={buttonLoading}
-                  onClose={closeAllPopups}
                   onNavbar={visibleNavbar}
                   offNavbar={hiddenNavbar}
                 />
@@ -291,7 +289,7 @@ function App({history}) {
                   <React.Fragment>
                     {loggedIn && (
                       <InfoTooltip
-                        isOpen={isTooltip}
+                        isTooltip={isTooltip}
                         onClose={closeAllPopups}
                       />
                     )}
@@ -368,4 +366,4 @@ function App({history}) {
   );
 }
 
-export default withRouter(App);
+export default App;
