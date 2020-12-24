@@ -57,8 +57,7 @@ function AddPlacePopup({ isLoadingButton, isOpen, onClose, onAddPlace }) {
       name={placePopup.name}
       title={placePopup.title}
       buttonTitle={placePopup.buttonTitle}
-      onSubmit={handleSubmit}
-      >
+      onSubmit={handleSubmit}>
       <MarkupForPopups.Place
         link={link}
         place={namePlace}

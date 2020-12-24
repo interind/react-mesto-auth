@@ -47,8 +47,7 @@ function EditAvatarPopup({ isLoadingButton, isOpen, onClose, onUpdateAvatar }) {
       isOpen={isOpen}
       onClose={onClose}
       active={activeButton}
-      onSubmit={handleSubmit}
-      >
+      onSubmit={handleSubmit}>
       <MarkupForPopups.Avatar
         avatarUser={avatarUser}
         inputRef={inputRef}

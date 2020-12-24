@@ -1,18 +1,14 @@
-
 import React from 'react';
 import classes from 'classnames';
 import enable from '../images/check/iconOk.svg';
 import disable from '../images/check/iconUnion.svg';
 import { MarkupForPopups } from './MarkupForPopups';
 
-
 function InfoTooltip({ isTooltip, onClose }) {
-  // подумать как провести регистрацию onOff
   const { isOpenTool, status, message } = isTooltip;
   const defaultTitle = status
     ? 'Вы успешно зарегистрировались.'
     : 'Что-то пошло не так! Попробуйте ещё раз.';
-  console.log(message);
   const tool = {
     id: 7,
     title: message !== '' ? message : defaultTitle,

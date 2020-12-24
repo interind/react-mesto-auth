@@ -1,13 +1,11 @@
 import React from 'react';
-import { useHistory } from 'react-router-dom';
 import Header from './Header';
 import * as auth from '../utils/auth.js';
 import PopupWithForm from './PopupWithForm';
 import InfoTooltip from './InfoTooltip';
 import { MarkupForPopups } from './MarkupForPopups';
 
-function Login({ isLoadingButton, isOpen, handleLogin, onNavbar, offNavbar, onLogin }) {
-  const history = useHistory();
+function Login({ isLoadingButton, isOpen, onNavbar, offNavbar, onLogin }) {
   const textButton = isLoadingButton ? 'Сохранение...' : 'Войти';
   const checkPopup = {
     id: 5,
@@ -79,18 +77,14 @@ function Login({ isLoadingButton, isOpen, handleLogin, onNavbar, offNavbar, onLo
         ...emailAndPassword,
       })
       .then((data) => {
-        console.log('login', data);
         if (data.token) {
-          onLogin(data.token);
           localStorage.setItem('email', emailAndPassword.email);
-          setEmailAndPassword({ email: '', password: '' });
-          handleLogin(evt); // обновляем стейт внутри App.js
-          history.push('/'); // и переадресуем пользователя!
+          onLogin(data.token, evt);
         } else if (!data.token && data.message) {
           infoMessage(data.message, false);
         }
       })
-      .catch((err) => console.log(err)); // запускается, если пользователь не найден
+      .catch((err) => console.log(err));
   }
   return (
     <React.Fragment>

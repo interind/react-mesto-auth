@@ -42,7 +42,7 @@ function PopupWithForm({
             disabled={disabledButton}>
             {buttonTitle}
           </button>
-          {linkInfo && <Navbar linkInfo={linkInfo} selectorPlace={'form'}/>}
+          {linkInfo && <Navbar linkInfo={linkInfo} selectorPlace={'form'} />}
           {onClose && (
             <button
               className='popup__button-close'

@@ -1,13 +1,17 @@
 import React from 'react';
-import { useHistory } from 'react-router-dom';
 import Header from './Header';
 import InfoTooltip from './InfoTooltip';
 import PopupWithForm from './PopupWithForm';
 import { MarkupForPopups } from './MarkupForPopups';
 import * as auth from '../utils/auth.js';
 
-function Register({ isLoadingButton, isOpen, onNavbar, offNavbar }) {
-  const history = useHistory();
+function Register({
+  isLoadingButton,
+  isOpen,
+  onNavbar,
+  offNavbar,
+  onRegister,
+}) {
   const textButton = isLoadingButton ? 'Сохранение...' : 'Регистрация';
   const checkPopup = {
     id: 6,
@@ -81,13 +85,11 @@ function Register({ isLoadingButton, isOpen, onNavbar, offNavbar }) {
     auth
       .register(password, email)
       .then((res) => {
-        console.log('reg', res);
         if (res.data) {
-          localStorage.setItem('email', res.data.email);
+          onRegister(res);
           infoMessage(res.data, true);
-          history.push('/sign-in');
         } else if (res.error) {
-           infoMessage(res.error, false);
+          infoMessage(res.error, false);
         } else if (res.message) {
           infoMessage(res.message, false);
         }

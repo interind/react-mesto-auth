@@ -2,8 +2,8 @@ import React from 'react';
 import headerLogo from '../images/header/logoFon.svg';
 import Navbar from './Navbar';
 
-function Header({ linkInfo, handleLogOut, onNavbar, offNavbar }) {
-  const checked = (event) => event.target.checked ? onNavbar() : offNavbar();
+function Header({ linkInfo, signOut, onNavbar, offNavbar }) {
+  const checked = (event) => (event.target.checked ? onNavbar() : offNavbar());
 
   return (
     <header className='header page__header'>
@@ -19,7 +19,7 @@ function Header({ linkInfo, handleLogOut, onNavbar, offNavbar }) {
         <Navbar
           linkInfo={linkInfo}
           selectorPlace={'header'}
-          handleLogOut={handleLogOut}
+          signOut={signOut}
         />
       )}
     </header>

@@ -18,7 +18,6 @@ export const register = (password, email) => { // регистрация
 };
 
 export const authorizationPost = ({ password, email }) => { // получение токена
-  console.log(password, email);
   return fetch(`${BASE_URL}signin`, {
     method: 'POST',
     headers: {
@@ -39,13 +38,3 @@ export const getContent = (token) => {
     },
   }).then(getResponse)
 };
-
-// export const deleteUser = (id, token) => {
-//     return fetch(`${this._url}${id}`, {
-//       method: 'DELETE',
-//       headers: {
-//         'Authorization': `Bearer ${token}`,
-//         'Content-type': 'application/json; charset=UTF-8',
-//       },
-//     }).then(getResponse);
-//   };

@@ -4,7 +4,7 @@ import classes from 'classnames';
 export const MarkupForPopups = {
   Avatar: function Avatar(props) {
     const inputValidClass = classes('popup__input', {
-      'popup__input_type_error': props.avatarUser,
+      popup__input_type_error: props.avatarUser,
     });
     return (
       <React.Fragment>
@@ -34,7 +34,7 @@ export const MarkupForPopups = {
   },
   Profile: function Profile(props) {
     const inputValidClass = classes('popup__input', {
-      'popup__input_type_error': props.nameProfile || props.about,
+      popup__input_type_error: props.nameProfile || props.about,
     });
     return (
       <React.Fragment>
@@ -87,7 +87,7 @@ export const MarkupForPopups = {
   },
   Place: function Place(props) {
     const inputValidClass = classes('popup__input', {
-      'popup__input_type_error': props.place || props.link,
+      popup__input_type_error: props.place || props.link,
     });
     return (
       <React.Fragment>
@@ -138,7 +138,7 @@ export const MarkupForPopups = {
   },
   Check: function Check(props) {
     const inputValidClass = classes('popup__input popup__input_type_check', {
-      'popup__input_type_error': props.password || props.email,
+      popup__input_type_error: props.password || props.email,
     });
     return (
       <React.Fragment>
@@ -192,7 +192,9 @@ export const MarkupForPopups = {
     return (
       <div
         className={props.classTool}
-        onMouseDown={(evt) => evt.currentTarget === evt.target && props.onClose()}>
+        onMouseDown={(evt) =>
+          evt.currentTarget === evt.target && props.onClose()
+        }>
         <div className='popup__container popup__container_type_tool'>
           <img
             className='popup__pic popup__pic_type_tool'
@@ -205,5 +207,5 @@ export const MarkupForPopups = {
         </div>
       </div>
     );
-  }
+  },
 };

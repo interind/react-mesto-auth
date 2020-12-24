@@ -1,10 +1,5 @@
 import React from 'react';
-import {
-  Route,
-  Switch,
-  Redirect,
-  useHistory,
-} from 'react-router-dom';
+import { Route, Switch, Redirect, useHistory } from 'react-router-dom';
 import * as auth from '../utils/auth.js';
 import api from '../utils/api.js';
 import Main from './Main.js';
@@ -12,6 +7,7 @@ import Login from './Login';
 import Header from './Header.js';
 import Footer from './Footer.js';
 import Loader from './Loader/Loader.js';
+import Navbar from './Navbar.js';
 import Register from './Register';
 import InfoTooltip from './InfoTooltip.js';
 import AddPlacePopup from './AddPlacePopup.js';
@@ -22,7 +18,6 @@ import DeleteCardPopup from './DeleteCardPopup.js';
 import EditProfilePopup from './EditProfilePopup.js';
 import { ErrorPage } from './Error/ErrorPage';
 import { CurrentUserContext } from '../context/CurrentUserContext.js';
-import Navbar from './Navbar.js';
 
 function App() {
   const history = useHistory();
@@ -45,28 +40,44 @@ function App() {
   const [statusError, setError] = React.useState({}); // флаг для ошибки сервера
   const [isOpenCard, setOpenCard] = React.useState(false); // тут булевое значение для попапа с картинкой
   const [isOpenCheck, setOpenCheck] = React.useState(true); // окно информации регистрации
-  const [isTooltip, setTooltip] = React.useState({ isOpenTool: false, status: false, message: '' });
+  const [isTooltip, setTooltip] = React.useState({
+    isOpenTool: false,
+    status: false,
+    message: '',
+  });
   const [selectedCard, setSelectedCard] = React.useState({}); // объект для попапа с картинкой
   const [buttonLoading, setButtonLoading] = React.useState(false); // Лоадер для кнопки сохранить.
-  // const [token, setToken] = React.useState({})
   const [userAuth, setUserAuth] = React.useState({
     link: '',
     title: '',
     email: '',
-  }); // данные в шапке при регистрации
+  });
 
-  function onLogin(token) {
+  function onLogin(token, evt) {
     setTooltip({ ...isTooltip, isOpenTool: true, status: true });
     localStorage.setItem('token', token);
+    handleLogin(evt);
+    history.push('/');
+  }
+
+  function onRegister(res) {
+    localStorage.setItem('email', res.data.email);
+    history.push('/sign-in');
+  }
+
+  function signOut(title, evt) {
+    if (title === 'Выйти') {
+      localStorage.removeItem('token');
+      handleLogOut(evt);
+      history.push('/sign-in');
+    }
   }
 
   React.useEffect(() => {
     if (localStorage.getItem('token')) {
       const token = localStorage.getItem('token');
       if (token) {
-        // проверим токен
         auth.getContent(token).then((res) => {
-          console.log('app' ,res)
           try {
             if (res) {
               setUserAuth({
@@ -93,7 +104,7 @@ function App() {
     setNavbarOpen(false);
   }
 
-  function handleLogin(event){
+  function handleLogin(event) {
     event.preventDefault();
     setLoggedIn(true);
   }
@@ -108,7 +119,6 @@ function App() {
       closeAllPopups();
     }
   }
-
 
   React.useEffect(() => {
     window.addEventListener('keydown', closeAllPopupsEsc);
@@ -135,7 +145,6 @@ function App() {
         setLoading(false);
       });
   }, []);
-
 
   function handleUpdateUser(props) {
     // получаем новую информацию пользователя  с сервера
@@ -281,6 +290,7 @@ function App() {
                   isLoadingButton={buttonLoading}
                   onNavbar={visibleNavbar}
                   offNavbar={hiddenNavbar}
+                  onRegister={onRegister}
                 />
               </Route>
               <ProtectedRoute exact path='/' loggedIn={loggedIn}>
@@ -298,7 +308,7 @@ function App() {
                     )}
                     <Header
                       linkInfo={userAuth}
-                      handleLogOut={handleLogOut}
+                      signOut={signOut}
                       onNavbar={visibleNavbar}
                       offNavbar={hiddenNavbar}
                     />
