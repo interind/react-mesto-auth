@@ -60,14 +60,15 @@ function Register({ isLoadingButton, isOpen }) {
     auth
       .register(password, email)
       .then((res) => {
-        // что за сообщение и пропс истории ???
-        if (res) {
+        console.log('reg', res);
+        if (res.data) {
+          localStorage.setItem('email', res.data.email);
           setMessage({
             ...message,
             isOpenMessage: true,
             status: true,
           });
-          history.push('/login');
+          history.push('/sign-in');
         } else {
           setMessage({
             ...message,
@@ -76,7 +77,14 @@ function Register({ isLoadingButton, isOpen }) {
           });
         }
       })
-      .catch((err) => console.log(err.message));
+      .catch((err) => {
+        setMessage({
+          ...message,
+          isOpenMessage: true,
+          status: false,
+        });
+        console.log(err.message)
+      });
   }
   return (
     <React.Fragment>

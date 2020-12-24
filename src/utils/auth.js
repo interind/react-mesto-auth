@@ -1,23 +1,20 @@
 export const BASE_URL = 'https://auth.nomoreparties.co/';
 
+function getResponse(res) {
+  return res.ok
+    ? res.json()
+    : Promise.reject(new Error(`Ошибка api: ${res.status}`));
+}
+
 export const register = (password, email) => { // регистрация
   return fetch(`${BASE_URL}signup`, {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json',
+      'Content-type': 'application/json; charset=UTF-8',
     },
     body: JSON.stringify({ password, email }),
   })
-    .then((response) => {
-      try {
-        if (response.status === 200) {
-          return response.json();
-        }
-      } catch (e) {
-          return e;
-        }
-    })
-    .catch((err) => console.log(err));
+    .then(getResponse)
 };
 
 export const authorizationPost = ({ password, email }) => { // получение токена
@@ -25,38 +22,30 @@ export const authorizationPost = ({ password, email }) => { // получени�
   return fetch(`${BASE_URL}signin`, {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json',
+      'Content-type': 'application/json; charset=UTF-8',
     },
     body: JSON.stringify({ email, password }),
   })
-    .then((response) => {
-      try {
-        if (response.status === 200) {
-          return response.json();
-        }
-        else if (response.status === 401) {
-          return response.json();
-        }
-      } catch (e) {
-          return e;
-        }
-    })
-    .then((data) => {
-      return data;
-    })
-    .catch((err) => console.log(err));
+    .then(getResponse)
 };
 
 export const getContent = (token) => {
   return fetch(`${BASE_URL}users/me`, {
     method: 'GET',
     headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
+      'Accept': 'application/json',
+      'Content-type': 'application/json; charset=UTF-8',
+      'Authorization': `Bearer ${token}`,
     },
-  })
-    .then((res) => res.json())
-    .then((data) => data)
-    .catch((err) => console.log(err));
+  }).then(getResponse)
 };
+
+export const deleteUser = (id, token) => {
+    return fetch(`${this._url}${id}`, {
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-type': 'application/json; charset=UTF-8',
+      },
+    }).then(getResponse);
+  };

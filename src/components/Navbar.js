@@ -13,6 +13,7 @@ function Navbar({ linkInfo, handleLogOut, selectorPlace }) {
   function signOut(evt) {
     if (title === 'Выйти') {
       localStorage.removeItem('token');
+      console.log(localStorage.length);
       handleLogOut(evt);
       history.push('/sign-in');
     }

@@ -16,8 +16,11 @@ function Login({ isLoadingButton, isOpen, handleLogin }) {
     buttonTitle: `${textButton}`,
     linkInfo: { link: '/sign-up', title: 'Регистрация', info: '' },
   };
-
-  const [emailAndPassword, setEmailAndPassword] = React.useState({ email: '', password: '' });
+  const localEmail = localStorage.getItem('email');
+  const [emailAndPassword, setEmailAndPassword] = React.useState({
+    email: localEmail ? localEmail : '',
+    password: '',
+  });
   let [activeButton, setActiveButton] = React.useState(true);
   const [message, setMessage] = React.useState({
     isOpenMessage: false,
@@ -62,8 +65,10 @@ function Login({ isLoadingButton, isOpen, handleLogin }) {
         ...emailAndPassword,
       })
       .then((data) => {
+        console.log('login', data);
         if (data.token) {
           localStorage.setItem('token', data.token);
+          localStorage.setItem('email', emailAndPassword.email);
           setEmailAndPassword({ email: '', password: '' });
           handleLogin(evt); // обновляем стейт внутри App.js
           history.push('/'); // и переадресуем пользователя!

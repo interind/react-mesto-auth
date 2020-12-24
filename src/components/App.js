@@ -61,6 +61,7 @@ function App() {
       if (token) {
         // проверим токен
         auth.getContent(token).then((res) => {
+          console.log('app' ,res)
           try {
             if (res) {
               setUserAuth({
