@@ -1,25 +1,33 @@
 import React from 'react';
-import Header from './Header';
+import PropTypes from 'prop-types';
 import * as auth from '../utils/auth.js';
+import Header from './Header';
 import PopupWithForm from './PopupWithForm';
 import InfoTooltip from './InfoTooltip';
 import { MarkupForPopups } from './MarkupForPopups';
 
-function Login({ isLoadingButton, isOpen, onNavbar, offNavbar, onLogin }) {
-  const textButton = isLoadingButton ? 'Сохранение...' : 'Войти';
-  const checkPopup = {
-    id: 5,
-    name: 'check',
-    title: 'Вход',
-    buttonTitle: `${textButton}`,
-    linkInfo: { link: '/sign-up', title: 'Регистрация', info: '' },
-  };
-  const localEmail = localStorage.getItem('email');
+Login.propTypes = {
+  isOpen: PropTypes.bool,
+  toggleNavbar: PropTypes.func.isRequired,
+  onLogin: PropTypes.func.isRequired,
+};
+
+Login.defaultProps = {
+  isOpen: true,
+};
+
+function Login({
+  isOpen,
+  toggleNavbar,
+  onLogin
+}) {
+  let localEmail = localStorage.getItem('email');
+  const [activeButton, setActiveButton] = React.useState(true);
+  const [isLoadingButton, setIsLoadingButton] = React.useState(false);
   const [emailAndPassword, setEmailAndPassword] = React.useState({
     email: localEmail ? localEmail : '',
     password: '',
   });
-  let [activeButton, setActiveButton] = React.useState(true);
   const [messageStatus, setMessageStatus] = React.useState({
     isOpenTool: false,
     status: false,
@@ -29,6 +37,18 @@ function Login({ isLoadingButton, isOpen, onNavbar, offNavbar, onLogin }) {
     password: '',
     email: '',
   });
+  const textButton = isLoadingButton ? 'Сохранение...' : 'Войти';
+  const checkPopup = {
+    id: 5,
+    name: 'check',
+    title: 'Вход',
+    buttonTitle: `${textButton}`,
+    linkInfo: {
+      link: '/sign-up',
+      title: 'Регистрация',
+      info: '',
+    },
+  };
 
   function validationCheck(evt) {
     !evt.target.validity.valid
@@ -41,7 +61,10 @@ function Login({ isLoadingButton, isOpen, onNavbar, offNavbar, onLogin }) {
   }
 
   function setPasswordUser(evt) {
-    setEmailAndPassword({ ...emailAndPassword, password: evt.target.value });
+    setEmailAndPassword({
+      ...emailAndPassword,
+      password: evt.target.value,
+    });
     setActiveButton(!evt.target.value);
   }
 
@@ -72,6 +95,7 @@ function Login({ isLoadingButton, isOpen, onNavbar, offNavbar, onLogin }) {
     if (!emailAndPassword.password || !emailAndPassword.email) {
       return;
     }
+    setIsLoadingButton(true);
     auth
       .authorizationPost({
         ...emailAndPassword,
@@ -84,15 +108,19 @@ function Login({ isLoadingButton, isOpen, onNavbar, offNavbar, onLogin }) {
           infoMessage(data.message, false);
         }
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        console.error(err);
+      })
+      .finally(() => {
+        setIsLoadingButton(false);
+      });
   }
   return (
     <React.Fragment>
       <InfoTooltip isTooltip={messageStatus} onClose={onClose} />
       <Header
         linkInfo={checkPopup.linkInfo}
-        onNavbar={onNavbar}
-        offNavbar={offNavbar}
+        toggleNavbar={toggleNavbar}
       />
       <div className='page__elements'>
         <PopupWithForm
@@ -118,3 +146,4 @@ function Login({ isLoadingButton, isOpen, onNavbar, offNavbar, onLogin }) {
 }
 
 export default Login;
+

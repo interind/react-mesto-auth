@@ -1,10 +1,15 @@
 import React from 'react';
-import headerLogo from '../images/header/logoFon.svg';
+import PropTypes from 'prop-types';
 import Navbar from './Navbar';
+import headerLogo from '../images/header/logoFon.svg';
 
-function Header({ linkInfo, signOut, onNavbar, offNavbar }) {
-  const checked = (event) => (event.target.checked ? onNavbar() : offNavbar());
+Header.propTypes = {
+  linkInfo: PropTypes.object,
+  signOut: PropTypes.func,
+  toggleNavbar: PropTypes.func.isRequired,
+};
 
+function Header({ linkInfo, signOut, toggleNavbar }) {
   return (
     <header className='header page__header'>
       <img className='logo logo_place_header' src={headerLogo} alt='Логотип' />
@@ -12,7 +17,7 @@ function Header({ linkInfo, signOut, onNavbar, offNavbar }) {
         <input
           type='checkbox'
           className='header__button-menu'
-          onChange={checked}></input>
+          onChange={toggleNavbar}></input>
         <span id='span' className='header__button-menu'></span>
       </label>
       {linkInfo && (

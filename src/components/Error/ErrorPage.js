@@ -1,6 +1,6 @@
 import React from 'react';
 
-export function ErrorPage({ error }) {
+function ErrorPage({ error }) {
   const styleErr = {
     color: '#f00',
     display: 'flex',
@@ -18,3 +18,5 @@ export function ErrorPage({ error }) {
     </React.Fragment>
   );
 }
+
+export default ErrorPage;

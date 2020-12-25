@@ -3,6 +3,26 @@ import classes from 'classnames';
 import PropTypes from 'prop-types';
 import Navbar from './Navbar';
 
+PopupWithForm.propTypes = {
+  active: PropTypes.bool,
+  isOpen: PropTypes.bool,
+  name: PropTypes.string,
+  title: PropTypes.string,
+  children: PropTypes.object,
+  buttonTitle: PropTypes.string,
+  onSubmit: PropTypes.func.isRequired,
+  onClose: PropTypes.func || undefined,
+  subtitleButton: PropTypes.object || undefined,
+};
+
+PopupWithForm.defaultProps = {
+  active: true,
+  isOpen: false,
+  children: null,
+  onClose: undefined,
+  subtitleButton: undefined,
+};
+
 function PopupWithForm({
   active,
   name,
@@ -55,17 +75,5 @@ function PopupWithForm({
     </React.Fragment>
   );
 }
-
-PopupWithForm.propTypes = {
-  active: PropTypes.bool,
-  isOpen: PropTypes.bool,
-  name: PropTypes.string,
-  title: PropTypes.string,
-  children: PropTypes.object,
-  buttonTitle: PropTypes.string,
-  onSubmit: PropTypes.func.isRequired,
-  onClose: PropTypes.func || undefined,
-  subtitleButton: PropTypes.object || undefined,
-};
 
 export default PopupWithForm;

@@ -1,8 +1,8 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import PopupWithForm from './PopupWithForm.js';
 import { MarkupForPopups } from './MarkupForPopups.js';
 import { CurrentUserContext } from '../context/CurrentUserContext.js';
-import PropTypes from 'prop-types';
 
 function EditProfilePopup({ isLoadingButton, isOpen, onClose, onUpdateUser }) {
   const textButton = isLoadingButton ? 'Сохранение...' : 'Сохранить';

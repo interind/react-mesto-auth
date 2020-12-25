@@ -9,6 +9,7 @@ import Footer from './Footer.js';
 import Loader from './Loader/Loader.js';
 import Navbar from './Navbar.js';
 import Register from './Register';
+import ErrorPage from './Error/ErrorPage';
 import InfoTooltip from './InfoTooltip.js';
 import AddPlacePopup from './AddPlacePopup.js';
 import ErrorBoundary from './Error/ErrorBoundary.js';
@@ -16,7 +17,6 @@ import ProtectedRoute from './ProtectedRoute';
 import EditAvatarPopup from './EditAvatarPopup.js';
 import DeleteCardPopup from './DeleteCardPopup.js';
 import EditProfilePopup from './EditProfilePopup.js';
-import { ErrorPage } from './Error/ErrorPage';
 import { CurrentUserContext } from '../context/CurrentUserContext.js';
 
 function App() {
@@ -25,7 +25,7 @@ function App() {
   const [isAddPlacePopupOpen, setAddPlacePopup] = React.useState(false);
   const [isEditAvatarPopupOpen, setEditAvatarPopup] = React.useState(false);
   const [isEditProfilePopupOpen, setEditProfilePopup] = React.useState(false);
-  const [isConfirmTrashPopupOpen, setConfirmTrashPopup] = React.useState(false);
+  const [isConfirmDeletePopupOpen, setConfirmDeletePopup] = React.useState(false);
   const [isNavbarOpen, setNavbarOpen] = React.useState(false);
   const [currentUser, setCurrentUser] = React.useState({
     name: '',
@@ -34,7 +34,7 @@ function App() {
     avatar: '',
   }); // тут информация обо мне с сервера
   const [cards, setCards] = React.useState([]); // тут информация о карточках
-  const [loading, setLoading] = React.useState(true); // лоадер при загрузке страницы
+  const [loading, setLoading] = React.useState(false); // лоадер при загрузке страницы
   const [statusOk, setIsOk] = React.useState(true); // флаг для ошибки сервера
   const [loggedIn, setLoggedIn] = React.useState(false);
   const [statusError, setError] = React.useState({}); // флаг для ошибки сервера
@@ -55,7 +55,7 @@ function App() {
 
   function onLogin(token, evt) {
     setTooltip({ ...isTooltip, isOpenTool: true, status: true });
-    localStorage.setItem('token', token);
+    localStorage.setItem('jwt', token);
     handleLogin(evt);
     history.push('/');
   }
@@ -67,41 +67,20 @@ function App() {
 
   function signOut(title, evt) {
     if (title === 'Выйти') {
-      localStorage.removeItem('token');
+      localStorage.removeItem('jwt');
       handleLogOut(evt);
       history.push('/sign-in');
+    } else {
+      console.error('Ошибка при выходе из приложения');
     }
   }
 
-  React.useEffect(() => {
-    if (localStorage.getItem('token')) {
-      const token = localStorage.getItem('token');
-      if (token) {
-        auth.getContent(token).then((res) => {
-          try {
-            if (res) {
-              setUserAuth({
-                link: '/sign-in',
-                title: 'Выйти',
-                email: res.data.email,
-              });
-              setLoggedIn(true);
-              history.push('/');
-            }
-          } catch (e) {
-            return new Error(e);
-          }
-        });
-      }
+  function toggleNavbar(evt) {
+    if(evt.target.checked) {
+      setNavbarOpen(true)
+    } else {
+      setNavbarOpen(false);
     }
-  }, [history, loggedIn]);
-
-  function visibleNavbar() {
-    setNavbarOpen(true);
-  }
-
-  function hiddenNavbar() {
-    setNavbarOpen(false);
   }
 
   function handleLogin(event) {
@@ -120,32 +99,6 @@ function App() {
     }
   }
 
-  React.useEffect(() => {
-    window.addEventListener('keydown', closeAllPopupsEsc);
-
-    return () => {
-      window.removeEventListener('keydown', closeAllPopupsEsc);
-    };
-  });
-
-  React.useEffect(() => {
-    // получаем данные с сервера
-    Promise.all([api.getInfoForUser(), api.getInfoForCards()])
-      .then(([dataUser, dataCards]) => {
-        setCurrentUser(dataUser);
-        setCards(dataCards);
-        setIsOk(true);
-      })
-      .catch((err) => {
-        console.error('Информация сервера с ошибкой', err.message);
-        setError(err);
-        setIsOk(false);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  }, []);
-
   function handleUpdateUser(props) {
     // получаем новую информацию пользователя  с сервера
     setButtonLoading(true);
@@ -163,6 +116,7 @@ function App() {
         console.error('Информация обновления пользователя с ошибкой', err)
       )
       .finally(() => {
+        setButtonLoading(false);
         closeAllPopups();
       });
   }
@@ -179,6 +133,7 @@ function App() {
         console.error('Информация обновления пользователя с ошибкой', err)
       )
       .finally(() => {
+        setButtonLoading(false);
         closeAllPopups();
       });
   }
@@ -204,7 +159,7 @@ function App() {
     setEditAvatarPopup(false);
     setEditProfilePopup(false);
     setAddPlacePopup(false);
-    setConfirmTrashPopup(false);
+    setConfirmDeletePopup(false);
     setOpenCard(false);
     setButtonLoading(false);
     setOpenCheck(true);
@@ -224,8 +179,8 @@ function App() {
   function handleAddPlaceClick() {
     setAddPlacePopup(true);
   }
-  function handleConfirmTrashClick(card) {
-    setConfirmTrashPopup(true);
+  function handleConfirmDeleteClick(card) {
+    setConfirmDeletePopup(true);
     setIsCard(card);
   }
   function handleCardClick(props) {
@@ -252,7 +207,6 @@ function App() {
   function handleCardDelete({ _id }) {
     // удаляем карточку
     const idCard = _id;
-
     setButtonLoading(true);
 
     api
@@ -264,38 +218,89 @@ function App() {
         console.error('Информация по карточкам с ошибкой', err.message)
       )
       .finally(() => {
+        setButtonLoading(true);
         closeAllPopups();
       });
   }
 
+  React.useEffect(() => {
+    if (localStorage.getItem('jwt')) {
+      const token = localStorage.getItem('jwt');
+
+      if (token) {
+        auth.getContent(token).then((res) => {
+          try {
+            if (res) {
+              setUserAuth({
+                link: '/sign-in',
+                title: 'Выйти',
+                email: res.data.email,
+              });
+              setLoggedIn(true);
+              history.push('/');
+            }
+          } catch (e) {
+            return new Error(e);
+          }
+        });
+      } else {
+        console.error('token отсутствует');
+      }
+    } else {
+      console.error('нет ключа jwt');
+    }
+  }, [history, loggedIn]);
+
+    React.useEffect(() => {
+      window.addEventListener('keydown', closeAllPopupsEsc);
+
+      return () => {
+        window.removeEventListener('keydown', closeAllPopupsEsc);
+      };
+    });
+
+    React.useEffect(() => {
+      setLoading(true);
+      Promise.all([api.getInfoForUser(), api.getInfoForCards()])
+        .then(([dataUser, dataCards]) => {
+          setCurrentUser(dataUser);
+          setCards(dataCards);
+          setIsOk(true);
+        })
+        .catch((err) => {
+          console.error('Информация сервера с ошибкой', err.message);
+          setError(err);
+          setIsOk(false);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    }, []);
+
   return (
     <React.Fragment>
-      <div className='page'>
+      <div className="page">
         <CurrentUserContext.Provider value={currentUser}>
           <ErrorBoundary>
             <Switch>
-              <Route path='/sign-in' exact>
+              <Route path="/sign-in" exact>
                 <Login
                   isOpen={isOpenCheck}
-                  isLoadingButton={buttonLoading}
                   handleLogin={handleLogin}
-                  onNavbar={visibleNavbar}
-                  offNavbar={hiddenNavbar}
+                  toggleNavbar={toggleNavbar}
                   onLogin={onLogin}
                 />
               </Route>
-              <Route path='/sign-up' exact>
+              <Route path="/sign-up" exact>
                 <Register
                   isOpen={isOpenCheck}
-                  isLoadingButton={buttonLoading}
-                  onNavbar={visibleNavbar}
-                  offNavbar={hiddenNavbar}
+                  toggleNavbar={toggleNavbar}
                   onRegister={onRegister}
                 />
               </Route>
-              <ProtectedRoute exact path='/' loggedIn={loggedIn}>
+              <ProtectedRoute exact path="/" loggedIn={loggedIn}>
                 {loading && <Loader />}
-                {statusOk & !loading && (
+                {(statusOk & !loading) && (
                   <React.Fragment>
                     {loggedIn && (
                       <InfoTooltip
@@ -304,13 +309,12 @@ function App() {
                       />
                     )}
                     {isNavbarOpen && (
-                      <Navbar selectorPlace={'page'} linkInfo={userAuth} />
+                      <Navbar selectorPlace={"page"} linkInfo={userAuth} />
                     )}
                     <Header
                       linkInfo={userAuth}
                       signOut={signOut}
-                      onNavbar={visibleNavbar}
-                      offNavbar={hiddenNavbar}
+                      toggleNavbar={toggleNavbar}
                     />
                     <Main
                       cards={cards}
@@ -322,7 +326,7 @@ function App() {
                       handleCardClick={handleCardClick}
                       onEditAvatar={handleEditAvatarClick}
                       onEditProfile={handleEditProfileClick}
-                      handleCardDelete={handleConfirmTrashClick}
+                      handleCardDelete={handleConfirmDeleteClick}
                     />
                     <AddPlacePopup
                       isOpen={isAddPlacePopupOpen}
@@ -345,20 +349,19 @@ function App() {
                     <DeleteCardPopup
                       isCard={isCard}
                       isLoadingButton={buttonLoading}
-                      isOpen={isConfirmTrashPopupOpen}
+                      isOpen={isConfirmDeletePopupOpen}
                       onClose={closeAllPopups}
                       onDeleteCard={handleCardDelete}
                     />
                     <Footer />
                   </React.Fragment>
                 )}
-                {!statusOk & !loading && (
+                {(!statusOk & !loading) && (
                   <React.Fragment>
                     <Header
                       linkInfo={userAuth}
-                      handleLogOut={handleLogOut}
-                      onNavbar={visibleNavbar}
-                      offNavbar={hiddenNavbar}
+                      signOut={signOut}
+                      toggleNavbar={toggleNavbar}
                     />
                     <ErrorPage error={statusError} />
                     <Footer />
@@ -366,7 +369,7 @@ function App() {
                 )}
               </ProtectedRoute>
               <Route>
-                {loggedIn ? <Redirect to='/' /> : <Redirect to='/sign-in' />}
+                {loggedIn ? <Redirect to="/" /> : <Redirect to="/sign-in" />}
               </Route>
             </Switch>
           </ErrorBoundary>

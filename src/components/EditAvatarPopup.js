@@ -1,7 +1,7 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import PopupWithForm from './PopupWithForm';
 import { MarkupForPopups } from './MarkupForPopups.js';
-import PropTypes from 'prop-types';
 
 function EditAvatarPopup({ isLoadingButton, isOpen, onClose, onUpdateAvatar }) {
   const textButton = isLoadingButton ? 'Сохранение...' : 'Сохранить';

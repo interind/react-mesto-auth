@@ -1,17 +1,39 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+import * as auth from '../utils/auth.js';
 import Header from './Header';
 import InfoTooltip from './InfoTooltip';
 import PopupWithForm from './PopupWithForm';
 import { MarkupForPopups } from './MarkupForPopups';
-import * as auth from '../utils/auth.js';
+
+Register.propTypes = {
+  isOpen: PropTypes.bool,
+  toggleNavbar: PropTypes.func.isRequired,
+  onRegister: PropTypes.func.isRequired,
+};
+
+Register.defaultProps = {
+  isOpen: true,
+};
 
 function Register({
-  isLoadingButton,
   isOpen,
-  onNavbar,
-  offNavbar,
-  onRegister,
+  toggleNavbar,
+  onRegister
 }) {
+  const [email, setEmail] = React.useState('');
+  const [password, setPassword] = React.useState('');
+  const [isLoadingButton, setIsLoadingButton] = React.useState(false);
+  const [messageStatus, setMessageStatus] = React.useState({
+    isOpenTool: false,
+    status: false,
+    message: '',
+  });
+  const [activeButton, setActiveButton] = React.useState(true);
+  const [validCheck, setValidCheck] = React.useState({
+    password: '',
+    email: '',
+  });
   const textButton = isLoadingButton ? 'Сохранение...' : 'Регистрация';
   const checkPopup = {
     id: 6,
@@ -28,20 +50,6 @@ function Register({
     link: checkPopup.linkInfo.link,
     title: checkPopup.linkInfo.title,
   };
-
-  const [password, setPassword] = React.useState('');
-  const [email, setEmail] = React.useState('');
-  const [messageStatus, setMessageStatus] = React.useState({
-    isOpenTool: false,
-    status: false,
-    message: '',
-  });
-  let [activeButton, setActiveButton] = React.useState(true);
-
-  const [validCheck, setValidCheck] = React.useState({
-    password: '',
-    email: '',
-  });
 
   function validationCheck(evt) {
     !evt.target.validity.valid
@@ -74,14 +82,23 @@ function Register({
     setPassword(evt.target.value);
     setActiveButton(!evt.target.value);
   }
+
   function setEmailUser(evt) {
     setEmail(evt.target.value);
     setActiveButton(!evt.target.value);
   }
-  function verifiesRegistration(evt) {
-    evt.preventDefault();
+
+  function clearInput() {
     setPassword('');
     setEmail('');
+  }
+
+  function verifiesRegistration(evt) {
+    evt.preventDefault();
+
+    clearInput();
+    setIsLoadingButton(true);
+
     auth
       .register(password, email)
       .then((res) => {
@@ -92,17 +109,25 @@ function Register({
           infoMessage(res.error, false);
         } else if (res.message) {
           infoMessage(res.message, false);
+        } else {
+          console.error('другая ошибка: res');
         }
       })
       .catch((err) => {
         infoMessage('', false);
-        console.log(err);
+        console.error(err);
+      })
+      .finally(() => {
+        setIsLoadingButton(false);
       });
   }
   return (
     <React.Fragment>
       <InfoTooltip isTooltip={messageStatus} onClose={onClose} />
-      <Header linkInfo={regNavbar} onNavbar={onNavbar} offNavbar={offNavbar} />
+      <Header
+        linkInfo={regNavbar}
+        toggleNavbar={toggleNavbar}
+      />
       <div className='page__elements'>
         <PopupWithForm
           isOpen={isOpen}

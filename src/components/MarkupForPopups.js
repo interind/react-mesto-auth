@@ -1,6 +1,7 @@
 import React from 'react';
 import classes from 'classnames';
 
+
 export const MarkupForPopups = {
   Avatar: function Avatar(props) {
     const inputValidClass = classes('popup__input', {

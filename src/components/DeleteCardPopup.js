@@ -22,6 +22,7 @@ function DeleteCardPopup({
 
     onDeleteCard(isCard);
   }
+
   return (
     <PopupWithForm
       isOpen={isOpen}
