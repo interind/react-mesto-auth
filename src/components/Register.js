@@ -1,14 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import * as auth from '../utils/auth.js';
 import Header from './Header';
+import Navbar from './Navbar';
 import InfoTooltip from './InfoTooltip';
 import PopupWithForm from './PopupWithForm';
 import { MarkupForPopups } from './MarkupForPopups';
-import Navbar from './Navbar';
 
 Register.propTypes = {
   isOpen: PropTypes.bool,
+  isLoadingButton: PropTypes.bool,
   toggleNavbar: PropTypes.func.isRequired,
   onRegister: PropTypes.func.isRequired,
 };
@@ -17,10 +17,15 @@ Register.defaultProps = {
   isOpen: false,
 };
 
-function Register({ isOpen, toggleNavbar, onRegister, isNavbarOpen }) {
+function Register({
+  isOpen,
+  toggleNavbar,
+  onRegister,
+  isNavbarOpen,
+  isLoadingButton,
+}) {
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
-  const [isLoadingButton, setIsLoadingButton] = React.useState(false);
   const [messageStatus, setMessageStatus] = React.useState({
     isOpenTool: false,
     status: false,
@@ -33,7 +38,6 @@ function Register({ isOpen, toggleNavbar, onRegister, isNavbarOpen }) {
   });
   const textButton = isLoadingButton ? 'Проверка...' : 'Регистрация';
   const checkPopup = {
-    id: 6,
     name: 'check',
     title: 'Регистрация',
     buttonTitle: `${textButton}`,
@@ -94,17 +98,9 @@ function Register({ isOpen, toggleNavbar, onRegister, isNavbarOpen }) {
     evt.preventDefault();
 
     clearInput();
-    setIsLoadingButton(true);
-
-    auth
-      .register(password, email)
+    onRegister(password, email)
       .then((res) => {
-        if (res.data) {
-          setIsLoadingButton(false);
-          onRegister(res);
-          localStorage.setItem('email', email);
-          infoMessage(res.data, true);
-        } else if (res.error) {
+        if (res.error) {
           infoMessage(res.error, false);
         } else if (res.message) {
           infoMessage(res.message, false);
@@ -115,9 +111,6 @@ function Register({ isOpen, toggleNavbar, onRegister, isNavbarOpen }) {
       .catch((err) => {
         infoMessage('', false);
         console.error(err);
-      })
-      .finally(() => {
-        setIsLoadingButton(false);
       });
   }
   return (
@@ -131,7 +124,6 @@ function Register({ isOpen, toggleNavbar, onRegister, isNavbarOpen }) {
         <PopupWithForm
           isOpen={isOpen}
           active={activeButton}
-          key={checkPopup.id}
           name={checkPopup.name}
           title={checkPopup.title}
           buttonTitle={checkPopup.buttonTitle}

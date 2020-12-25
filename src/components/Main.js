@@ -2,29 +2,22 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Card from './Card.js';
 import Profile from './Profile';
-import ImagePopup from './ImagePopup.js';
 
 Main.propTypes = {
   cards: PropTypes.array,
-  isOpenCard: PropTypes.bool,
-  selectedCard: PropTypes.object,
   onAddPlace: PropTypes.func.isRequired,
   onEditAvatar: PropTypes.func.isRequired,
   onEditProfile: PropTypes.func.isRequired,
   handleCardLike: PropTypes.func.isRequired,
-  closeAllPopups: PropTypes.func.isRequired,
   handleCardClick: PropTypes.func.isRequired,
   handleCardDelete: PropTypes.func.isRequired,
 };
 
 function Main({
   cards,
-  isOpenCard,
   onAddPlace,
-  selectedCard,
   onEditAvatar,
   onEditProfile,
-  closeAllPopups,
   handleCardLike,
   handleCardClick,
   handleCardDelete,
@@ -50,11 +43,6 @@ function Main({
           );
         })}
       </div>
-      <ImagePopup
-        isOpen={isOpenCard}
-        onClose={closeAllPopups}
-        selectedCard={selectedCard}
-      />
     </React.Fragment>
   );
 }

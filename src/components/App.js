@@ -18,6 +18,7 @@ import EditAvatarPopup from './EditAvatarPopup.js';
 import DeleteCardPopup from './DeleteCardPopup.js';
 import EditProfilePopup from './EditProfilePopup.js';
 import { CurrentUserContext } from '../context/CurrentUserContext.js';
+import ImagePopup from './ImagePopup';
 
 function App() {
   const history = useHistory();
@@ -53,17 +54,49 @@ function App() {
     email: '',
   });
 
-  function onLogin(token, evt) {
-    setOpenCheck(false);
-    setTooltip({ ...isTooltip, isOpenTool: true, status: true });
-    localStorage.setItem('jwt', token);
-    handleLogin(evt);
-    history.push('/');
+  function onLogin(emailAndPassword, evt) {
+    setButtonLoading(true);
+    return auth
+      .authorizationPost({
+        ...emailAndPassword,
+      })
+      .then((data) => {
+         setButtonLoading(false);
+        if (data.token) {
+          localStorage.setItem('jwt', data.token);
+          handleLogin(evt);
+          history.push('/');
+          setOpenCheck(false);
+          setTooltip({ ...isTooltip, isOpenTool: true, status: true });
+        }
+        return data;
+      })
+      .catch((err) => {
+        console.error(err);
+      })
+      .finally(() => {
+         setButtonLoading(false);
+      });
   }
 
-  function onRegister(res) {
-    localStorage.setItem('email', res.data.email);
-    history.push('/sign-in');
+  function onRegister(password, email) {
+    setButtonLoading(true);
+    return auth
+      .register(password, email)
+      .then((res) => {
+        if (res.data) {
+          setButtonLoading(false);
+          localStorage.setItem('email', res.data.email);
+          history.push('/sign-in');
+        }
+        return res;
+      })
+      .catch((err) => {
+        console.error(err);
+      })
+      .finally(() => {
+        setButtonLoading(false);
+      });
   }
 
   function signOut(evt) {
@@ -215,7 +248,7 @@ function App() {
         console.error('Информация по карточкам с ошибкой', err.message)
       )
       .finally(() => {
-        setButtonLoading(true);
+        setButtonLoading(false);
         closeAllPopups();
       });
   }
@@ -240,6 +273,8 @@ function App() {
             return new Error(e);
           }
         });
+      } else {
+        localStorage.removeItem('jwt');
       }
     }
   }, [history, loggedIn]);
@@ -300,9 +335,6 @@ function App() {
                     />
                     <Main
                       cards={cards}
-                      isOpenCard={isOpenCard}
-                      selectedCard={selectedCard}
-                      closeAllPopups={closeAllPopups}
                       handleCardLike={handleCardLike}
                       onAddPlace={handleAddPlaceClick}
                       handleCardClick={handleCardClick}
@@ -336,6 +368,11 @@ function App() {
                       onDeleteCard={handleCardDelete}
                     />
                     <Footer />
+                    <ImagePopup
+                      isOpen={isOpenCard}
+                      onClose={closeAllPopups}
+                      selectedCard={selectedCard}
+                    />
                   </React.Fragment>
                 )}
                 {!statusOk & !loading && (
@@ -353,18 +390,20 @@ function App() {
               <Route path='/sign-in' exact>
                 <Login
                   isOpen={isOpenCheck}
+                  isNavbarOpen={isNavbarOpen}
+                  isLoadingButton={buttonLoading}
+                  onLogin={onLogin}
                   handleLogin={handleLogin}
                   toggleNavbar={toggleNavbar}
-                  onLogin={onLogin}
-                  isNavbarOpen={isNavbarOpen}
                 />
               </Route>
               <Route path='/sign-up' exact>
                 <Register
                   isOpen={isOpenCheck}
-                  toggleNavbar={toggleNavbar}
-                  onRegister={onRegister}
                   isNavbarOpen={isNavbarOpen}
+                  isLoadingButton={buttonLoading}
+                  onRegister={onRegister}
+                  toggleNavbar={toggleNavbar}
                 />
               </Route>
               <Route>

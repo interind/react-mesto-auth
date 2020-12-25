@@ -10,7 +10,6 @@ function InfoTooltip({ isTooltip, onClose }) {
     ? 'Вы успешно зарегистрировались.'
     : 'Что-то пошло не так! Попробуйте ещё раз.';
   const tool = {
-    id: 7,
     title: message !== '' ? message : defaultTitle,
     alt: status ? 'Регистрация пройдена' : 'Регистрация не пройдена',
     icon: status ? enable : disable,

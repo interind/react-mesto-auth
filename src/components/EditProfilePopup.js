@@ -7,7 +7,6 @@ import { CurrentUserContext } from '../context/CurrentUserContext.js';
 function EditProfilePopup({ isLoadingButton, isOpen, onClose, onUpdateUser }) {
   const textButton = isLoadingButton ? 'Сохранение...' : 'Сохранить';
   const profile = {
-    id: 2,
     name: 'profile',
     title: 'Редактировать форму',
     buttonTitle: `${textButton}`,
@@ -58,7 +57,6 @@ function EditProfilePopup({ isLoadingButton, isOpen, onClose, onUpdateUser }) {
       isOpen={isOpen}
       onClose={onClose}
       active={activeButton}
-      key={profile.id}
       name={profile.name}
       title={profile.title}
       buttonTitle={profile.buttonTitle}

@@ -16,7 +16,6 @@ export const MarkupForPopups = {
           id='input-avatar'
           name='avatar'
           value={props.avatarUser}
-          ref={props.inputRef}
           onChange={props.editAvatar}
           onInput={props.validationAvatar}
           required

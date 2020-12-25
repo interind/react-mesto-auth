@@ -6,13 +6,11 @@ import { MarkupForPopups } from './MarkupForPopups.js';
 function EditAvatarPopup({ isLoadingButton, isOpen, onClose, onUpdateAvatar }) {
   const textButton = isLoadingButton ? 'Сохранение...' : 'Сохранить';
   const avatarPopup = {
-    id: 1,
     name: 'avatar',
     title: 'Обновить аватар',
     buttonTitle: `${textButton}`,
   };
 
-  const inputRef = React.useRef();
   const [avatarUser, setAvatar] = React.useState('');
   let [activeButton, setActiveButton] = React.useState(true);
   const [validAvatar, setValidAvatar] = React.useState('');
@@ -23,9 +21,9 @@ function EditAvatarPopup({ isLoadingButton, isOpen, onClose, onUpdateAvatar }) {
       : setValidAvatar('');
   }
 
-  function setAvatarUser() {
-    setAvatar(inputRef.current.value);
-    setActiveButton(!inputRef.current.value);
+  function setAvatarUser(evt) {
+    setAvatar(evt.target.value);
+    setActiveButton(!evt.target.value);
   }
 
   function handleSubmit(evt) {
@@ -40,7 +38,6 @@ function EditAvatarPopup({ isLoadingButton, isOpen, onClose, onUpdateAvatar }) {
 
   return (
     <PopupWithForm
-      key={avatarPopup.id}
       name={avatarPopup.name}
       title={avatarPopup.title}
       buttonTitle={avatarPopup.buttonTitle}
@@ -50,7 +47,6 @@ function EditAvatarPopup({ isLoadingButton, isOpen, onClose, onUpdateAvatar }) {
       onSubmit={handleSubmit}>
       <MarkupForPopups.Avatar
         avatarUser={avatarUser}
-        inputRef={inputRef}
         editAvatar={setAvatarUser}
         avatarMessage={validAvatar}
         validationAvatar={validationAvatar}

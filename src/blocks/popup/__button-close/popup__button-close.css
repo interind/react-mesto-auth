@@ -32,5 +32,6 @@
    top: -50px;
    width: 30px;
    height: 30px;
+   transform: translateX(-50%);
  }
 }

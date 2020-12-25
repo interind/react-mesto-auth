@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import * as auth from '../utils/auth.js';
 import Header from './Header';
 import Navbar from './Navbar';
 import PopupWithForm from './PopupWithForm';
@@ -9,14 +8,20 @@ import { MarkupForPopups } from './MarkupForPopups';
 
 Login.propTypes = {
   isOpen: PropTypes.bool,
+  isLoadingButton: PropTypes.bool,
   toggleNavbar: PropTypes.func.isRequired,
   onLogin: PropTypes.func.isRequired,
 };
 
-function Login({ isOpen, toggleNavbar, onLogin, isNavbarOpen }) {
+function Login({
+  isOpen,
+  toggleNavbar,
+  onLogin,
+  isNavbarOpen,
+  isLoadingButton,
+}) {
   let localEmail = localStorage.getItem('email');
   const [activeButton, setActiveButton] = React.useState(true);
-  const [isLoadingButton, setIsLoadingButton] = React.useState(false);
   const [emailAndPassword, setEmailAndPassword] = React.useState({
     email: localEmail ? localEmail : '',
     password: '',
@@ -32,7 +37,6 @@ function Login({ isOpen, toggleNavbar, onLogin, isNavbarOpen }) {
   });
   const textButton = isLoadingButton ? 'Проверка...' : 'Войти';
   const checkPopup = {
-    id: 5,
     name: 'check',
     title: 'Вход',
     buttonTitle: `${textButton}`,
@@ -88,24 +92,14 @@ function Login({ isOpen, toggleNavbar, onLogin, isNavbarOpen }) {
     if (!emailAndPassword.password || !emailAndPassword.email) {
       return;
     }
-    setIsLoadingButton(true);
-    auth
-      .authorizationPost({
-        ...emailAndPassword,
-      })
+    onLogin(emailAndPassword, evt)
       .then((data) => {
-        if (data.token) {
-          setIsLoadingButton(false);
-          onLogin(data.token, evt);
-        } else if (!data.token && data.message) {
+        if (!data.token && data.message) {
           infoMessage(data.message, false);
         }
       })
       .catch((err) => {
         console.error(err);
-      })
-      .finally(() => {
-        setIsLoadingButton(false);
       });
   }
   return (
@@ -117,7 +111,6 @@ function Login({ isOpen, toggleNavbar, onLogin, isNavbarOpen }) {
       <Header linkInfo={checkPopup.linkInfo} toggleNavbar={toggleNavbar} />
       <div className='page__elements'>
         <PopupWithForm
-          key={checkPopup.id}
           name={checkPopup.name}
           title={checkPopup.title}
           buttonTitle={checkPopup.buttonTitle}

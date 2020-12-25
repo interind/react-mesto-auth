@@ -16,7 +16,7 @@ PopupWithForm.propTypes = {
 };
 
 PopupWithForm.defaultProps = {
-  active: true,
+  active: false,
   isOpen: false,
   children: null,
   onClose: undefined,

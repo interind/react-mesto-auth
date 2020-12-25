@@ -2,6 +2,14 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import PopupWithForm from './PopupWithForm.js';
 
+DeleteCardPopup.propTypes = {
+  isOpen: PropTypes.bool,
+  isCard: PropTypes.object,
+  isLoadingButton: PropTypes.bool,
+  onClose: PropTypes.func.isRequired,
+  onDeleteCard: PropTypes.func.isRequired,
+};
+
 function DeleteCardPopup({
   isOpen,
   isCard,
@@ -11,7 +19,6 @@ function DeleteCardPopup({
 }) {
   const textButton = isLoadingButton ? 'Удаляем...' : 'Да';
   const deletePopup = {
-    id: 4,
     name: 'delete',
     title: 'Вы уверены?',
     buttonTitle: `${textButton}`,
@@ -27,7 +34,6 @@ function DeleteCardPopup({
     <PopupWithForm
       isOpen={isOpen}
       onClose={onClose}
-      key={deletePopup.id}
       name={deletePopup.name}
       title={deletePopup.title}
       buttonTitle={deletePopup.buttonTitle}
@@ -35,13 +41,5 @@ function DeleteCardPopup({
     />
   );
 }
-
-DeleteCardPopup.propTypes = {
-  isOpen: PropTypes.bool,
-  isCard: PropTypes.object,
-  isLoadingButton: PropTypes.bool,
-  onClose: PropTypes.func.isRequired,
-  onDeleteCard: PropTypes.func.isRequired,
-};
 
 export default DeleteCardPopup;
