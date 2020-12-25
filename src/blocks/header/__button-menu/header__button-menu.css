@@ -36,6 +36,7 @@
 
   .header__button-menu[type='checkbox']:checked + .header__button-menu[id='span'] {
     background-image: url('../../../images/Close-Icon.svg');
+    border: none;
   }
 
 }

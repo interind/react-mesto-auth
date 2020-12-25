@@ -5,6 +5,7 @@ import Header from './Header';
 import InfoTooltip from './InfoTooltip';
 import PopupWithForm from './PopupWithForm';
 import { MarkupForPopups } from './MarkupForPopups';
+import Navbar from './Navbar';
 
 Register.propTypes = {
   isOpen: PropTypes.bool,
@@ -13,14 +14,10 @@ Register.propTypes = {
 };
 
 Register.defaultProps = {
-  isOpen: true,
+  isOpen: false,
 };
 
-function Register({
-  isOpen,
-  toggleNavbar,
-  onRegister
-}) {
+function Register({ isOpen, toggleNavbar, onRegister, isNavbarOpen }) {
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
   const [isLoadingButton, setIsLoadingButton] = React.useState(false);
@@ -34,7 +31,7 @@ function Register({
     password: '',
     email: '',
   });
-  const textButton = isLoadingButton ? 'Сохранение...' : 'Регистрация';
+  const textButton = isLoadingButton ? 'Проверка...' : 'Регистрация';
   const checkPopup = {
     id: 6,
     name: 'check',
@@ -103,7 +100,9 @@ function Register({
       .register(password, email)
       .then((res) => {
         if (res.data) {
+          setIsLoadingButton(false);
           onRegister(res);
+          localStorage.setItem('email', email);
           infoMessage(res.data, true);
         } else if (res.error) {
           infoMessage(res.error, false);
@@ -124,10 +123,10 @@ function Register({
   return (
     <React.Fragment>
       <InfoTooltip isTooltip={messageStatus} onClose={onClose} />
-      <Header
-        linkInfo={regNavbar}
-        toggleNavbar={toggleNavbar}
-      />
+      {isNavbarOpen && (
+        <Navbar selectorPlace={'page'} linkInfo={checkPopup.linkInfo} />
+      )}
+      <Header linkInfo={regNavbar} toggleNavbar={toggleNavbar} />
       <div className='page__elements'>
         <PopupWithForm
           isOpen={isOpen}

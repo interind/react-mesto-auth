@@ -4,35 +4,34 @@ import classes from 'classnames';
 import PropTypes from 'prop-types';
 
 Navbar.propTypes = {
-  link: PropTypes.string,
-  email: PropTypes.string,
-  info: PropTypes.string,
-  title: PropTypes.string,
-  signOut: PropTypes.func.isRequired,
+  linkInfo: PropTypes.object,
+  signOut: PropTypes.func,
   selectorPlace: PropTypes.string,
 };
 
 Navbar.defaultProps = {
-  link: '/sign-up',
-  email: '',
-  info: '',
-  title: 'Регистрация',
+  selectorPlace: '',
 };
 
-function Navbar({ link, email, info, title }, {signOut, selectorPlace }) {
-  // const { link, email, info, title } = linkInfo;
+function Navbar({ linkInfo , signOut, selectorPlace }) {
+  const { link, email, info, title } = linkInfo;
   const selector = classes('navbar', {
     navbar_place_header: selectorPlace === 'header',
     navbar_place_form: selectorPlace === 'form',
     navbar_place_page: selectorPlace === 'page',
   });
 
+
   return (
     <nav className={selector}>
       {(email || info) && <p className='navbar__info'>{email || info}</p>}
-      <Link className="navbar__link" to={link} onClick={signOut}>
+      {signOut ?
+      (<Link className='navbar__link' to={link} onClick={(evt) => signOut(evt)}>
         {title}
-      </Link>
+      </Link>) :
+      (<Link className='navbar__link' to={link}>
+          {title}
+      </Link>)}
     </nav>
   );
 }

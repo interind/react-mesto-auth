@@ -6,10 +6,15 @@ import headerLogo from '../images/header/logoFon.svg';
 Header.propTypes = {
   linkInfo: PropTypes.object,
   signOut: PropTypes.func,
+  selector: PropTypes.string,
   toggleNavbar: PropTypes.func.isRequired,
 };
 
-function Header({ linkInfo, signOut, toggleNavbar }) {
+Header.defaultProps = {
+  selector: 'header',
+};
+
+function Header({ linkInfo, signOut, toggleNavbar, selector }) {
   return (
     <header className='header page__header'>
       <img className='logo logo_place_header' src={headerLogo} alt='Логотип' />
@@ -23,7 +28,7 @@ function Header({ linkInfo, signOut, toggleNavbar }) {
       {linkInfo && (
         <Navbar
           linkInfo={linkInfo}
-          selectorPlace={'header'}
+          selectorPlace={selector}
           signOut={signOut}
         />
       )}

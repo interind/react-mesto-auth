@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import * as auth from '../utils/auth.js';
 import Header from './Header';
+import Navbar from './Navbar';
 import PopupWithForm from './PopupWithForm';
 import InfoTooltip from './InfoTooltip';
 import { MarkupForPopups } from './MarkupForPopups';
@@ -12,15 +13,7 @@ Login.propTypes = {
   onLogin: PropTypes.func.isRequired,
 };
 
-Login.defaultProps = {
-  isOpen: true,
-};
-
-function Login({
-  isOpen,
-  toggleNavbar,
-  onLogin
-}) {
+function Login({ isOpen, toggleNavbar, onLogin, isNavbarOpen }) {
   let localEmail = localStorage.getItem('email');
   const [activeButton, setActiveButton] = React.useState(true);
   const [isLoadingButton, setIsLoadingButton] = React.useState(false);
@@ -37,7 +30,7 @@ function Login({
     password: '',
     email: '',
   });
-  const textButton = isLoadingButton ? 'Сохранение...' : 'Войти';
+  const textButton = isLoadingButton ? 'Проверка...' : 'Войти';
   const checkPopup = {
     id: 5,
     name: 'check',
@@ -102,7 +95,7 @@ function Login({
       })
       .then((data) => {
         if (data.token) {
-          localStorage.setItem('email', emailAndPassword.email);
+          setIsLoadingButton(false);
           onLogin(data.token, evt);
         } else if (!data.token && data.message) {
           infoMessage(data.message, false);
@@ -118,10 +111,10 @@ function Login({
   return (
     <React.Fragment>
       <InfoTooltip isTooltip={messageStatus} onClose={onClose} />
-      <Header
-        linkInfo={checkPopup.linkInfo}
-        toggleNavbar={toggleNavbar}
-      />
+      {isNavbarOpen && (
+        <Navbar selectorPlace={'page'} linkInfo={checkPopup.linkInfo} />
+      )}
+      <Header linkInfo={checkPopup.linkInfo} toggleNavbar={toggleNavbar} />
       <div className='page__elements'>
         <PopupWithForm
           key={checkPopup.id}

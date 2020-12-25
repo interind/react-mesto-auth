@@ -54,6 +54,7 @@ function App() {
   });
 
   function onLogin(token, evt) {
+    setOpenCheck(false);
     setTooltip({ ...isTooltip, isOpenTool: true, status: true });
     localStorage.setItem('jwt', token);
     handleLogin(evt);
@@ -65,14 +66,10 @@ function App() {
     history.push('/sign-in');
   }
 
-  function signOut(title, evt) {
-    if (title === 'Выйти') {
+  function signOut(evt) {
       localStorage.removeItem('jwt');
       handleLogOut(evt);
       history.push('/sign-in');
-    } else {
-      console.error('Ошибка при выходе из приложения');
-    }
   }
 
   function toggleNavbar(evt) {
@@ -83,13 +80,13 @@ function App() {
     }
   }
 
-  function handleLogin(event) {
-    event.preventDefault();
+  function handleLogin(evt) {
+    evt.preventDefault();
     setLoggedIn(true);
   }
 
-  function handleLogOut(event) {
-    event.preventDefault();
+  function handleLogOut(evt) {
+    evt.preventDefault();
     setLoggedIn(false);
   }
 
@@ -243,11 +240,7 @@ function App() {
             return new Error(e);
           }
         });
-      } else {
-        console.error('token отсутствует');
       }
-    } else {
-      console.error('нет ключа jwt');
     }
   }, [history, loggedIn]);
 
@@ -279,28 +272,13 @@ function App() {
 
   return (
     <React.Fragment>
-      <div className="page">
+      <div className='page'>
         <CurrentUserContext.Provider value={currentUser}>
           <ErrorBoundary>
             <Switch>
-              <Route path="/sign-in" exact>
-                <Login
-                  isOpen={isOpenCheck}
-                  handleLogin={handleLogin}
-                  toggleNavbar={toggleNavbar}
-                  onLogin={onLogin}
-                />
-              </Route>
-              <Route path="/sign-up" exact>
-                <Register
-                  isOpen={isOpenCheck}
-                  toggleNavbar={toggleNavbar}
-                  onRegister={onRegister}
-                />
-              </Route>
-              <ProtectedRoute exact path="/" loggedIn={loggedIn}>
+              <ProtectedRoute exact path='/' loggedIn={loggedIn}>
                 {loading && <Loader />}
-                {(statusOk & !loading) && (
+                {statusOk & !loading && (
                   <React.Fragment>
                     {loggedIn && (
                       <InfoTooltip
@@ -309,7 +287,11 @@ function App() {
                       />
                     )}
                     {isNavbarOpen && (
-                      <Navbar selectorPlace={"page"} linkInfo={userAuth} />
+                      <Navbar
+                        selectorPlace={'page'}
+                        linkInfo={userAuth}
+                        signOut={signOut}
+                      />
                     )}
                     <Header
                       linkInfo={userAuth}
@@ -356,7 +338,7 @@ function App() {
                     <Footer />
                   </React.Fragment>
                 )}
-                {(!statusOk & !loading) && (
+                {!statusOk & !loading && (
                   <React.Fragment>
                     <Header
                       linkInfo={userAuth}
@@ -368,8 +350,25 @@ function App() {
                   </React.Fragment>
                 )}
               </ProtectedRoute>
+              <Route path='/sign-in' exact>
+                <Login
+                  isOpen={isOpenCheck}
+                  handleLogin={handleLogin}
+                  toggleNavbar={toggleNavbar}
+                  onLogin={onLogin}
+                  isNavbarOpen={isNavbarOpen}
+                />
+              </Route>
+              <Route path='/sign-up' exact>
+                <Register
+                  isOpen={isOpenCheck}
+                  toggleNavbar={toggleNavbar}
+                  onRegister={onRegister}
+                  isNavbarOpen={isNavbarOpen}
+                />
+              </Route>
               <Route>
-                {loggedIn ? <Redirect to="/" /> : <Redirect to="/sign-in" />}
+                {loggedIn ? <Redirect to='/' /> : <Redirect to='/sign-in' />}
               </Route>
             </Switch>
           </ErrorBoundary>

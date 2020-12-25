@@ -12,7 +12,7 @@
   padding-bottom: -5px;
 }
 
-@media screen and (max-height: 414px) {
+@media screen and (max-width: 414px) {
   .popup__title {
     font-size: 18px;
   }
@@ -21,6 +21,5 @@
 @media screen and (max-width: 320px) {
   .popup__title {
     max-width: 185px;
-    font-size: 18px;
   }
 }
