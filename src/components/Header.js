@@ -1,20 +1,20 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Navbar from './Navbar';
 import headerLogo from '../images/header/logoFon.svg';
+import Navbar from './Navbar';
 
 Header.propTypes = {
-  linkInfo: PropTypes.object,
-  signOut: PropTypes.func,
-  selector: PropTypes.string,
   toggleNavbar: PropTypes.func.isRequired,
 };
 
-Header.defaultProps = {
-  selector: 'header',
-};
-
-function Header({ linkInfo, signOut, toggleNavbar, selector }) {
+function Header({
+  toggleNavbar,
+  signOut,
+  email,
+  link,
+  selectorPlace,
+  isNavbarOpen,
+}) {
   return (
     <header className='header page__header'>
       <img className='logo logo_place_header' src={headerLogo} alt='Логотип' />
@@ -25,13 +25,12 @@ function Header({ linkInfo, signOut, toggleNavbar, selector }) {
           onChange={toggleNavbar}></input>
         <span id='span' className='header__button-menu'></span>
       </label>
-      {linkInfo && (
-        <Navbar
-          linkInfo={linkInfo}
-          selectorPlace={selector}
-          signOut={signOut}
-        />
-      )}
+      {!isNavbarOpen && (<Navbar
+        selectorPlace={selectorPlace}
+        email={email}
+        link={link}
+        signOut={signOut}
+      />)}
     </header>
   );
 }

@@ -32,7 +32,8 @@ function PopupWithForm({
   children,
   onSubmit,
   buttonTitle,
-  linkInfo,
+  userAuthInfo,
+  signOut,
 }) {
   const disabledButton = active ? 'disabled' : '';
   const popup = classes(`popup popup_type_${name}`, { popup_opened: isOpen });
@@ -62,7 +63,14 @@ function PopupWithForm({
             disabled={disabledButton}>
             {buttonTitle}
           </button>
-          {linkInfo && <Navbar linkInfo={linkInfo} selectorPlace={'form'} />}
+          {userAuthInfo && (
+            <Navbar
+              info={userAuthInfo.info}
+              link={userAuthInfo.link}
+              signOut={signOut}
+              selectorPlace={'form'}
+            />
+          )}
           {onClose && (
             <button
               className='popup__button-close'

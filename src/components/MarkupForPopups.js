@@ -189,22 +189,24 @@ export const MarkupForPopups = {
     );
   },
   Tool: function Tool(props) {
+
     return (
       <div
         className={props.classTool}
         onMouseDown={(evt) =>
           evt.currentTarget === evt.target && props.onClose()
-        }>
-        <div className='popup__container popup__container_type_tool'>
-          <img
-            className='popup__pic popup__pic_type_tool'
-            src={props.icon}
-            alt={props.alt}></img>
-          <p className='popup__title popup__title_type_tool'>{props.title}</p>
-          <button
-            className='popup__button-close'
-            onClick={props.onClose}></button>
-        </div>
+        }
+        >
+      <div className='popup__container popup__container_type_tool'>
+        <img
+          className='popup__pic popup__pic_type_tool'
+          src={props.icon}
+          alt={props.alt}></img>
+        <p className='popup__title popup__title_type_tool'>{props.title}</p>
+        <button
+          className='popup__button-close'
+          onClick={props.onClose}></button>
+      </div>
       </div>
     );
   },

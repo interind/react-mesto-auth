@@ -2,7 +2,23 @@ import React from 'react';
 import classes from 'classnames';
 import PropTypes from 'prop-types';
 
-function ImagePopup({ selectedCard, onClose, isOpen }) {
+ImagePopup.propTypes = {
+  isOpen: PropTypes.bool,
+  selectedCard: PropTypes.object,
+  onClose: PropTypes.func.isRequired,
+  toggleEventListenerWindow: PropTypes.func.isRequired,
+};
+
+function ImagePopup({
+  selectedCard,
+  onClose,
+  isOpen,
+  toggleEventListenerWindow,
+}) {
+  React.useEffect(() => {
+    toggleEventListenerWindow(isOpen);
+  }, [isOpen, toggleEventListenerWindow]);
+
   const popup = classes('popup popup_type_zoom', { popup_opened: isOpen });
   const pic = classes('popup__pic', {
     popup__pic_type_check: selectedCard.name === 'check',
@@ -25,11 +41,5 @@ function ImagePopup({ selectedCard, onClose, isOpen }) {
     </div>
   );
 }
-
-ImagePopup.propTypes = {
-  isOpen: PropTypes.bool,
-  selectedCard: PropTypes.object,
-  onClose: PropTypes.func.isRequired,
-};
 
 export default ImagePopup;

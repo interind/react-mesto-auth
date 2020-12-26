@@ -3,7 +3,25 @@ import PropTypes from 'prop-types';
 import PopupWithForm from './PopupWithForm';
 import { MarkupForPopups } from './MarkupForPopups.js';
 
-function EditAvatarPopup({ isLoadingButton, isOpen, onClose, onUpdateAvatar }) {
+EditAvatarPopup.propTypes = {
+  isOpen: PropTypes.bool,
+  isLoadingButton: PropTypes.bool,
+  onClose: PropTypes.func.isRequired,
+  onUpdateAvatar: PropTypes.func.isRequired,
+  toggleEventListenerWindow: PropTypes.func.isRequired,
+};
+
+function EditAvatarPopup({
+  isLoadingButton,
+  isOpen,
+  onClose,
+  onUpdateAvatar,
+  toggleEventListenerWindow,
+}) {
+  React.useEffect(() => {
+    toggleEventListenerWindow(isOpen);
+  }, [isOpen, toggleEventListenerWindow]);
+
   const textButton = isLoadingButton ? 'Сохранение...' : 'Сохранить';
   const avatarPopup = {
     name: 'avatar',
@@ -54,12 +72,5 @@ function EditAvatarPopup({ isLoadingButton, isOpen, onClose, onUpdateAvatar }) {
     </PopupWithForm>
   );
 }
-
-EditAvatarPopup.propTypes = {
-  isOpen: PropTypes.bool,
-  isLoadingButton: PropTypes.bool,
-  onClose: PropTypes.func.isRequired,
-  onUpdateAvatar: PropTypes.func.isRequired,
-};
 
 export default EditAvatarPopup;

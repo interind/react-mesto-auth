@@ -4,7 +4,25 @@ import PopupWithForm from './PopupWithForm.js';
 import { MarkupForPopups } from './MarkupForPopups.js';
 import { CurrentUserContext } from '../context/CurrentUserContext.js';
 
-function EditProfilePopup({ isLoadingButton, isOpen, onClose, onUpdateUser }) {
+EditProfilePopup.propTypes = {
+  isOpen: PropTypes.bool,
+  isLoadingButton: PropTypes.bool,
+  onClose: PropTypes.func.isRequired,
+  onUpdateUser: PropTypes.func.isRequired,
+  toggleEventListenerWindow: PropTypes.func.isRequired,
+};
+
+function EditProfilePopup({
+  isLoadingButton,
+  isOpen,
+  onClose,
+  onUpdateUser,
+  toggleEventListenerWindow,
+}) {
+  React.useEffect(() => {
+    toggleEventListenerWindow(isOpen);
+  }, [isOpen, toggleEventListenerWindow]);
+
   const textButton = isLoadingButton ? 'Сохранение...' : 'Сохранить';
   const profile = {
     name: 'profile',
@@ -60,8 +78,7 @@ function EditProfilePopup({ isLoadingButton, isOpen, onClose, onUpdateUser }) {
       name={profile.name}
       title={profile.title}
       buttonTitle={profile.buttonTitle}
-      onSubmit={handleSubmit}
-      >
+      onSubmit={handleSubmit}>
       <MarkupForPopups.Profile
         about={description}
         nameProfile={nameProfile}
@@ -73,12 +90,5 @@ function EditProfilePopup({ isLoadingButton, isOpen, onClose, onUpdateUser }) {
     </PopupWithForm>
   );
 }
-
-EditProfilePopup.propTypes = {
-  isOpen: PropTypes.bool,
-  isLoadingButton: PropTypes.bool,
-  onClose: PropTypes.func.isRequired,
-  onUpdateUser: PropTypes.func.isRequired,
-};
 
 export default EditProfilePopup;

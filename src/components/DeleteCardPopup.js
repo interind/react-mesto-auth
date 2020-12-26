@@ -8,6 +8,7 @@ DeleteCardPopup.propTypes = {
   isLoadingButton: PropTypes.bool,
   onClose: PropTypes.func.isRequired,
   onDeleteCard: PropTypes.func.isRequired,
+  toggleEventListenerWindow: PropTypes.func.isRequired,
 };
 
 function DeleteCardPopup({
@@ -16,7 +17,12 @@ function DeleteCardPopup({
   onClose,
   onDeleteCard,
   isLoadingButton,
+  toggleEventListenerWindow,
 }) {
+  React.useEffect(() => {
+    toggleEventListenerWindow(isOpen);
+  }, [isOpen, toggleEventListenerWindow]);
+
   const textButton = isLoadingButton ? 'Удаляем...' : 'Да';
   const deletePopup = {
     name: 'delete',

@@ -7,9 +7,9 @@ import Login from './Login';
 import Header from './Header.js';
 import Footer from './Footer.js';
 import Loader from './Loader/Loader.js';
-import Navbar from './Navbar.js';
 import Register from './Register';
 import ErrorPage from './Error/ErrorPage';
+import ImagePopup from './ImagePopup';
 import InfoTooltip from './InfoTooltip.js';
 import AddPlacePopup from './AddPlacePopup.js';
 import ErrorBoundary from './Error/ErrorBoundary.js';
@@ -18,7 +18,8 @@ import EditAvatarPopup from './EditAvatarPopup.js';
 import DeleteCardPopup from './DeleteCardPopup.js';
 import EditProfilePopup from './EditProfilePopup.js';
 import { CurrentUserContext } from '../context/CurrentUserContext.js';
-import ImagePopup from './ImagePopup';
+import Navbar from './Navbar';
+import Page from './Page';
 
 function App() {
   const history = useHistory();
@@ -26,7 +27,9 @@ function App() {
   const [isAddPlacePopupOpen, setAddPlacePopup] = React.useState(false);
   const [isEditAvatarPopupOpen, setEditAvatarPopup] = React.useState(false);
   const [isEditProfilePopupOpen, setEditProfilePopup] = React.useState(false);
-  const [isConfirmDeletePopupOpen, setConfirmDeletePopup] = React.useState(false);
+  const [isConfirmDeletePopupOpen, setConfirmDeletePopup] = React.useState(
+    false
+  );
   const [isNavbarOpen, setNavbarOpen] = React.useState(false);
   const [currentUser, setCurrentUser] = React.useState({
     name: '',
@@ -48,50 +51,31 @@ function App() {
   });
   const [selectedCard, setSelectedCard] = React.useState({}); // объект для попапа с картинкой
   const [buttonLoading, setButtonLoading] = React.useState(false); // Лоадер для кнопки сохранить.
-  const [userAuth, setUserAuth] = React.useState({
-    link: '',
-    title: '',
+  const [userAuthInfo, setUserAuthInfo] = React.useState({
+    link: '/sign-up',
     email: '',
   });
 
   function onLogin(emailAndPassword, evt) {
     setButtonLoading(true);
-    return auth
+    auth
       .authorizationPost({
         ...emailAndPassword,
       })
       .then((data) => {
-         setButtonLoading(false);
+        setButtonLoading(false);
         if (data.token) {
           localStorage.setItem('jwt', data.token);
           handleLogin(evt);
           history.push('/');
           setOpenCheck(false);
-          setTooltip({ ...isTooltip, isOpenTool: true, status: true });
+          infoMessage('', true);
+        } else if (!data.token && data.message) {
+          infoMessage(data.message, false);
         }
-        return data;
       })
       .catch((err) => {
-        console.error(err);
-      })
-      .finally(() => {
-         setButtonLoading(false);
-      });
-  }
-
-  function onRegister(password, email) {
-    setButtonLoading(true);
-    return auth
-      .register(password, email)
-      .then((res) => {
-        if (res.data) {
-          setButtonLoading(false);
-          localStorage.setItem('email', res.data.email);
-          history.push('/sign-in');
-        }
-        return res;
-      })
-      .catch((err) => {
+        infoMessage('', false);
         console.error(err);
       })
       .finally(() => {
@@ -99,15 +83,66 @@ function App() {
       });
   }
 
+  function onRegister(password, email) {
+    setButtonLoading(true);
+    auth
+      .register(password, email)
+      .then((res) => {
+        if (res.data) {
+          setButtonLoading(false);
+          localStorage.setItem('email', res.data.email);
+          history.push('/sign-in');
+        } else if (res.error) {
+          infoMessage(res.error, false);
+        } else if (res.message) {
+          infoMessage(res.message, false);
+        } else {
+          console.error('другая ошибка: res');
+        }
+      })
+      .catch((err) => {
+        infoMessage('', false);
+        console.error(err);
+      })
+      .finally(() => {
+        setButtonLoading(false);
+      });
+  }
+
+  function infoMessage(text, bool) {
+    setTooltip({
+      ...isTooltip,
+      isOpenTool: true,
+      status: bool,
+      message: text,
+    });
+  }
+
   function signOut(evt) {
-      localStorage.removeItem('jwt');
-      handleLogOut(evt);
+    if (evt.target.text === 'Выйти') {
+      if (localStorage.getItem('jwt')) {
+        localStorage.removeItem('jwt');
+        localStorage.removeItem('email');
+        setUserAuthInfo({ ...userAuthInfo, email: '' });
+        handleLogOut(evt);
+        history.push('/sign-in');
+      } else {
+        localStorage.clear();
+        handleLogOut(evt);
+        history.push('/sign-in');
+      }
+    } else if (evt.target.text === 'Регистрация') {
+      history.push('/sign-up');
+      setUserAuthInfo({ ...userAuthInfo, link: '/sign-in'});
+    } else if (evt.target.text === 'Вход') {
       history.push('/sign-in');
+      setUserAuthInfo({ ...userAuthInfo, link: '/sign-up' });
+    }
   }
 
   function toggleNavbar(evt) {
-    if(evt.target.checked) {
-      setNavbarOpen(true)
+    if (evt.target.checked) {
+      setNavbarOpen(true);
     } else {
       setNavbarOpen(false);
     }
@@ -121,12 +156,6 @@ function App() {
   function handleLogOut(evt) {
     evt.preventDefault();
     setLoggedIn(false);
-  }
-
-  function closeAllPopupsEsc(evt) {
-    if (evt.key === 'Escape') {
-      closeAllPopups();
-    }
   }
 
   function handleUpdateUser(props) {
@@ -197,6 +226,7 @@ function App() {
       ...isTooltip,
       isOpenTool: false,
       message: '',
+      status: false,
     });
   }
 
@@ -253,6 +283,20 @@ function App() {
       });
   }
 
+  async function toggleEventListenerWindow(popup) {
+    if (popup) {
+      await window.addEventListener('keydown', closeAllPopupsEsc);
+    } else {
+      await window.removeEventListener('keydown', closeAllPopupsEsc);
+    }
+  }
+
+  function closeAllPopupsEsc(evt) {
+    if (evt.key === 'Escape') {
+      closeAllPopups();
+    }
+  }
+
   React.useEffect(() => {
     if (localStorage.getItem('jwt')) {
       const token = localStorage.getItem('jwt');
@@ -261,9 +305,9 @@ function App() {
         auth.getContent(token).then((res) => {
           try {
             if (res) {
-              setUserAuth({
+              setUserAuthInfo({
+                info: '',
                 link: '/sign-in',
-                title: 'Выйти',
                 email: res.data.email,
               });
               setLoggedIn(true);
@@ -276,63 +320,60 @@ function App() {
       } else {
         localStorage.removeItem('jwt');
       }
+    } else {
+      localStorage.clear();
     }
   }, [history, loggedIn]);
 
-    React.useEffect(() => {
-      window.addEventListener('keydown', closeAllPopupsEsc);
-
-      return () => {
-        window.removeEventListener('keydown', closeAllPopupsEsc);
-      };
-    });
-
-    React.useEffect(() => {
-      setLoading(true);
-      Promise.all([api.getInfoForUser(), api.getInfoForCards()])
-        .then(([dataUser, dataCards]) => {
-          setCurrentUser(dataUser);
-          setCards(dataCards);
-          setIsOk(true);
-        })
-        .catch((err) => {
-          console.error('Информация сервера с ошибкой', err.message);
-          setError(err);
-          setIsOk(false);
-        })
-        .finally(() => {
-          setLoading(false);
-        });
-    }, []);
+  React.useEffect(() => {
+    setLoading(true);
+    Promise.all([api.getInfoForUser(), api.getInfoForCards()])
+      .then(([dataUser, dataCards]) => {
+        setCurrentUser(dataUser);
+        setCards(dataCards);
+        setIsOk(true);
+      })
+      .catch((err) => {
+        console.error('Информация сервера с ошибкой', err.message);
+        setError(err);
+        setIsOk(false);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, []);
 
   return (
     <React.Fragment>
-      <div className='page'>
+      <Page>
         <CurrentUserContext.Provider value={currentUser}>
           <ErrorBoundary>
+            {isNavbarOpen && (
+              <Navbar
+                selectorPlace={'page'}
+                link={userAuthInfo.link}
+                email={userAuthInfo.email}
+                signOut={signOut}
+              />
+            )}
+            <Header
+              selectorPlace={'header'}
+              link={userAuthInfo.link}
+              email={userAuthInfo.email}
+              isNavbarOpen={isNavbarOpen}
+              signOut={signOut}
+              toggleNavbar={toggleNavbar}
+            />
+            <InfoTooltip
+              isOpen={isTooltip}
+              onClose={closeAllPopups}
+              toggleEventListenerWindow={toggleEventListenerWindow}
+            />
             <Switch>
               <ProtectedRoute exact path='/' loggedIn={loggedIn}>
                 {loading && <Loader />}
                 {statusOk & !loading && (
                   <React.Fragment>
-                    {loggedIn && (
-                      <InfoTooltip
-                        isTooltip={isTooltip}
-                        onClose={closeAllPopups}
-                      />
-                    )}
-                    {isNavbarOpen && (
-                      <Navbar
-                        selectorPlace={'page'}
-                        linkInfo={userAuth}
-                        signOut={signOut}
-                      />
-                    )}
-                    <Header
-                      linkInfo={userAuth}
-                      signOut={signOut}
-                      toggleNavbar={toggleNavbar}
-                    />
                     <Main
                       cards={cards}
                       handleCardLike={handleCardLike}
@@ -347,18 +388,21 @@ function App() {
                       isLoadingButton={buttonLoading}
                       onClose={closeAllPopups}
                       onAddPlace={handleAddPlace}
+                      toggleEventListenerWindow={toggleEventListenerWindow}
                     />
                     <EditAvatarPopup
                       isOpen={isEditAvatarPopupOpen}
                       isLoadingButton={buttonLoading}
                       onClose={closeAllPopups}
                       onUpdateAvatar={handleUpdateAvatar}
+                      toggleEventListenerWindow={toggleEventListenerWindow}
                     />
                     <EditProfilePopup
                       isOpen={isEditProfilePopupOpen}
                       isLoadingButton={buttonLoading}
                       onClose={closeAllPopups}
                       onUpdateUser={handleUpdateUser}
+                      toggleEventListenerWindow={toggleEventListenerWindow}
                     />
                     <DeleteCardPopup
                       isCard={isCard}
@@ -366,53 +410,40 @@ function App() {
                       isOpen={isConfirmDeletePopupOpen}
                       onClose={closeAllPopups}
                       onDeleteCard={handleCardDelete}
+                      toggleEventListenerWindow={toggleEventListenerWindow}
                     />
-                    <Footer />
                     <ImagePopup
                       isOpen={isOpenCard}
-                      onClose={closeAllPopups}
                       selectedCard={selectedCard}
+                      onClose={closeAllPopups}
+                      toggleEventListenerWindow={toggleEventListenerWindow}
                     />
                   </React.Fragment>
                 )}
-                {!statusOk & !loading && (
-                  <React.Fragment>
-                    <Header
-                      linkInfo={userAuth}
-                      signOut={signOut}
-                      toggleNavbar={toggleNavbar}
-                    />
-                    <ErrorPage error={statusError} />
-                    <Footer />
-                  </React.Fragment>
-                )}
+                {!statusOk & !loading && <ErrorPage error={statusError} />}
               </ProtectedRoute>
               <Route path='/sign-in' exact>
                 <Login
                   isOpen={isOpenCheck}
-                  isNavbarOpen={isNavbarOpen}
                   isLoadingButton={buttonLoading}
                   onLogin={onLogin}
                   handleLogin={handleLogin}
-                  toggleNavbar={toggleNavbar}
                 />
               </Route>
               <Route path='/sign-up' exact>
                 <Register
                   isOpen={isOpenCheck}
-                  isNavbarOpen={isNavbarOpen}
                   isLoadingButton={buttonLoading}
+                  signOut={signOut}
                   onRegister={onRegister}
-                  toggleNavbar={toggleNavbar}
                 />
               </Route>
-              <Route>
-                {loggedIn ? <Redirect to='/' /> : <Redirect to='/sign-in' />}
-              </Route>
             </Switch>
+            {loggedIn ? <Redirect to='/' /> : <Redirect to='/sign-in' />}
+            <Footer />
           </ErrorBoundary>
         </CurrentUserContext.Provider>
-      </div>
+      </Page>
     </React.Fragment>
   );
 }

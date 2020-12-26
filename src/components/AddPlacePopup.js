@@ -3,7 +3,26 @@ import PropTypes from 'prop-types';
 import PopupWithForm from './PopupWithForm.js';
 import { MarkupForPopups } from './MarkupForPopups.js';
 
-function AddPlacePopup({ isLoadingButton, isOpen, onClose, onAddPlace }) {
+AddPlacePopup.propTypes = {
+  isOpen: PropTypes.bool,
+  isLoadingButton: PropTypes.bool,
+  onClose: PropTypes.func.isRequired,
+  onAddPlace: PropTypes.func.isRequired,
+  toggleEventListenerWindow: PropTypes.func.isRequired,
+};
+
+function AddPlacePopup({
+  isLoadingButton,
+  isOpen,
+  onClose,
+  onAddPlace,
+  toggleEventListenerWindow,
+}) {
+
+  React.useEffect(() => {
+    toggleEventListenerWindow(isOpen);
+  }, [isOpen, toggleEventListenerWindow]);
+
   const textButton = isLoadingButton ? 'Сохранение...' : 'Сохранить';
   const placePopup = {
     id: 3,
@@ -69,12 +88,5 @@ function AddPlacePopup({ isLoadingButton, isOpen, onClose, onAddPlace }) {
     </PopupWithForm>
   );
 }
-
-AddPlacePopup.propTypes = {
-  isOpen: PropTypes.bool,
-  isLoadingButton: PropTypes.bool,
-  onClose: PropTypes.func.isRequired,
-  onAddPlace: PropTypes.func.isRequired,
-};
 
 export default AddPlacePopup;
