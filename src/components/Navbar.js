@@ -4,13 +4,18 @@ import classes from 'classnames';
 import PropTypes from 'prop-types';
 
 Navbar.propTypes = {
-  userAuthInfo: PropTypes.object,
+  info: PropTypes.string,
+  link: PropTypes.string,
+  email: PropTypes.string,
   signOut: PropTypes.func,
   selectorPlace: PropTypes.string,
 };
 
 Navbar.defaultProps = {
   selectorPlace: '',
+  info: '',
+  link: '',
+  email: '',
 };
 
 function Navbar({ email, info, link, signOut, selectorPlace }) {

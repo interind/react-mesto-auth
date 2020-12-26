@@ -8,6 +8,7 @@ import { MarkupForPopups } from './MarkupForPopups';
 InfoTooltip.propTypes = {
   isTooltip: PropTypes.object,
   onClose: PropTypes.func.isRequired,
+  toggleEventListenerWindow: PropTypes.func.isRequired,
 };
 
 function InfoTooltip({ isOpen, onClose, toggleEventListenerWindow }) {
@@ -26,17 +27,6 @@ function InfoTooltip({ isOpen, onClose, toggleEventListenerWindow }) {
   React.useEffect(() => {
     toggleEventListenerWindow(isOpen);
   }, [isOpen, toggleEventListenerWindow]);
-
-  // const closePopupsEsc = React.useCallback((evt) => {
-  //   if (evt.key === 'Escape') {
-  //     onClose();
-  //     window.removeEventListener('keydown', closePopupsEsc);
-  //   }
-  // },[onClose])
-
-  // React.useEffect(() => {
-  //   return window.addEventListener('keydown', closePopupsEsc);
-  // }, [closePopupsEsc, isTooltip])
 
   return (
     <MarkupForPopups.Tool

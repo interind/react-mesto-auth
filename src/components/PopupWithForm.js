@@ -11,8 +11,9 @@ PopupWithForm.propTypes = {
   children: PropTypes.object,
   buttonTitle: PropTypes.string,
   onSubmit: PropTypes.func.isRequired,
-  onClose: PropTypes.func || undefined,
-  subtitleButton: PropTypes.object || undefined,
+  onClose: PropTypes.func,
+  userAuthInfo: PropTypes.object,
+  signOut: PropTypes.func,
 };
 
 PopupWithForm.defaultProps = {
@@ -20,7 +21,6 @@ PopupWithForm.defaultProps = {
   isOpen: false,
   children: null,
   onClose: undefined,
-  subtitleButton: undefined,
 };
 
 function PopupWithForm({

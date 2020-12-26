@@ -307,11 +307,11 @@ function App() {
             if (res) {
               setUserAuthInfo({
                 info: '',
-                link: '/sign-in',
+                link: '/sign-up',
                 email: res.data.email,
               });
+              localStorage.setItem('email', res.data.email);
               setLoggedIn(true);
-              history.push('/');
             }
           } catch (e) {
             return new Error(e);
@@ -323,7 +323,7 @@ function App() {
     } else {
       localStorage.clear();
     }
-  }, [history, loggedIn]);
+  }, [loggedIn]);
 
   React.useEffect(() => {
     setLoading(true);
@@ -345,6 +345,7 @@ function App() {
 
   return (
     <React.Fragment>
+      {loggedIn ? <Redirect to='/' /> : <Redirect to='/sign-in' />}
       <Page>
         <CurrentUserContext.Provider value={currentUser}>
           <ErrorBoundary>
@@ -439,7 +440,6 @@ function App() {
                 />
               </Route>
             </Switch>
-            {loggedIn ? <Redirect to='/' /> : <Redirect to='/sign-in' />}
             <Footer />
           </ErrorBoundary>
         </CurrentUserContext.Provider>

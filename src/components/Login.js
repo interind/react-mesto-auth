@@ -7,6 +7,7 @@ Login.propTypes = {
   isOpen: PropTypes.bool,
   isLoadingButton: PropTypes.bool,
   onLogin: PropTypes.func.isRequired,
+  signOut: PropTypes.func,
 };
 
 function Login({
@@ -15,7 +16,7 @@ function Login({
   signOut,
   isLoadingButton,
 }) {
-  let localEmail = localStorage.getItem('email');
+  const localEmail = localStorage.getItem('email');
   const [activeButton, setActiveButton] = React.useState(true);
   const [emailAndPassword, setEmailAndPassword] = React.useState({
     email: localEmail ? localEmail : '',

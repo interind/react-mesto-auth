@@ -6,6 +6,7 @@ import { MarkupForPopups } from './MarkupForPopups';
 Register.propTypes = {
   isOpen: PropTypes.bool,
   isLoadingButton: PropTypes.bool,
+  signOut: PropTypes.func.isRequired,
   onRegister: PropTypes.func.isRequired,
 };
 
