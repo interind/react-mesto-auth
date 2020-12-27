@@ -33,7 +33,7 @@ function AddPlacePopup({
 
   const [namePlace, setPlace] = React.useState('');
   const [link, setLink] = React.useState('');
-  let [activeButton, setActiveButton] = React.useState(true);
+  const [activeButton, setActiveButton] = React.useState(true);
 
   const [validPlace, setValidPlace] = React.useState({
     place: '',

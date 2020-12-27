@@ -30,7 +30,7 @@ function EditAvatarPopup({
   };
 
   const [avatarUser, setAvatar] = React.useState('');
-  let [activeButton, setActiveButton] = React.useState(true);
+  const [activeButton, setActiveButton] = React.useState(true);
   const [validAvatar, setValidAvatar] = React.useState('');
 
   function validationAvatar(evt) {

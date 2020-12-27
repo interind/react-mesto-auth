@@ -32,7 +32,7 @@ function EditProfilePopup({
   const currentUser = React.useContext(CurrentUserContext);
   const [nameProfile, setName] = React.useState({ name: '' });
   const [description, setDescription] = React.useState({ about: '' });
-  let [activeButton, setActiveButton] = React.useState(true);
+  const [activeButton, setActiveButton] = React.useState(true);
   const [validProfile, setValidProfile] = React.useState({
     name: '',
     about: '',
