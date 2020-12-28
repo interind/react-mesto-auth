@@ -31,10 +31,6 @@ function Login({
     name: 'check',
     title: 'Вход',
     buttonTitle: `${textButton}`,
-    linkInfo: {
-      link: '/sign-up',
-      info: '',
-    },
   };
 
   function validationCheck(evt) {

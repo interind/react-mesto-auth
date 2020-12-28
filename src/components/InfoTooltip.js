@@ -25,8 +25,14 @@ function InfoTooltip({ isOpen, onClose, toggleEventListenerWindow }) {
     }),
   };
   React.useEffect(() => {
-    toggleEventListenerWindow(isOpen);
-  }, [isOpen, toggleEventListenerWindow]);
+    if (isOpenTool) {
+      toggleEventListenerWindow(true);
+    }
+    return () => {
+      toggleEventListenerWindow(false);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpenTool]);
 
   return (
     <MarkupForPopups.Tool

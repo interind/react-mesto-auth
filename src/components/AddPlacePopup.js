@@ -20,12 +20,17 @@ function AddPlacePopup({
 }) {
 
   React.useEffect(() => {
-    toggleEventListenerWindow(isOpen);
-  }, [isOpen, toggleEventListenerWindow]);
+    if (isOpen) {
+      toggleEventListenerWindow(true);
+    }
+    return () => {
+       toggleEventListenerWindow(false);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen]);
 
   const textButton = isLoadingButton ? 'Сохранение...' : 'Сохранить';
   const placePopup = {
-    id: 3,
     name: 'place',
     title: 'Новое место',
     buttonTitle: `${textButton}`,
@@ -72,7 +77,6 @@ function AddPlacePopup({
       isOpen={isOpen}
       onClose={onClose}
       active={activeButton}
-      key={placePopup.id}
       name={placePopup.name}
       title={placePopup.title}
       buttonTitle={placePopup.buttonTitle}

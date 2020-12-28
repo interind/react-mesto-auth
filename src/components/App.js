@@ -283,8 +283,8 @@ function App() {
       });
   }
 
-  async function toggleEventListenerWindow(popup) {
-    if (popup) {
+  async function toggleEventListenerWindow(bool) {
+    if (bool) {
       await window.addEventListener('keydown', closeAllPopupsEsc);
     } else {
       await window.removeEventListener('keydown', closeAllPopupsEsc);
