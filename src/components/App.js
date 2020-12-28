@@ -422,16 +422,18 @@ function App() {
                     />
                   </React.Fragment>
                 )}
-                {!statusOk & !loading && <ErrorPage error={statusError} />}
+                {!statusOk && <ErrorPage error={statusError} />}
               </ProtectedRoute>
-              <Route path='/sign-in' exact>
-                <Login
-                  isOpen={isOpenCheck}
-                  isLoadingButton={buttonLoading}
-                  onLogin={onLogin}
-                  handleLogin={handleLogin}
-                />
-              </Route>
+              {!loading && (
+                <Route path='/sign-in' exact>
+                  <Login
+                    isOpen={isOpenCheck}
+                    isLoadingButton={buttonLoading}
+                    onLogin={onLogin}
+                    handleLogin={handleLogin}
+                  />
+                </Route>
+              )}
               <Route path='/sign-up' exact>
                 <Register
                   isOpen={isOpenCheck}
@@ -441,7 +443,7 @@ function App() {
                 />
               </Route>
             </Switch>
-            <Footer />
+            {!loading && <Footer />}
           </ErrorBoundary>
         </CurrentUserContext.Provider>
       </Page>
