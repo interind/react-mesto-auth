@@ -69,7 +69,7 @@ function App() {
           handleLogin(evt);
           history.push('/');
           setOpenCheck(false);
-          infoMessage('', true);
+          infoMessage('Добро пожаловать на проект Mesto', true);
         } else if (!data.token && data.message) {
           infoMessage(data.message, false);
         }
@@ -90,8 +90,10 @@ function App() {
       .then((res) => {
         if (res.data) {
           setButtonLoading(false);
+          infoMessage('', true);
           localStorage.setItem('email', res.data.email);
           history.push('/sign-in');
+          setUserAuthInfo({ ...userAuthInfo, link: '/sign-up' });
         } else if (res.error) {
           infoMessage(res.error, false);
         } else if (res.message) {
@@ -226,7 +228,6 @@ function App() {
       ...isTooltip,
       isOpenTool: false,
       message: '',
-      status: false,
     });
   }
 
